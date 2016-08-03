@@ -103,12 +103,12 @@ class Game
 					end
 				end}
 			if ptrump < otrump
-				puts " "
-				puts "Player is attacker"
+				puts "      A          B          C          D          E          F "
+				puts "Player is attacker. Which card would you like to play?"
 				@turn = "player"
 			else
 				puts " "
-				puts "Opponent is attacker"
+				puts "Opponent is attacker. Opponent plays #{"opponent's card"}"
 				@turn = "opponent"
 			end
 			@first = false
