@@ -25,16 +25,98 @@ class Card
 	end 
 end
 
-def shuffle(deck)
-	deck.length.times{|x|
-		location = rand(deck.length)
-		temp = deck[location]
-		deck[location] = deck[x]
-		deck[x] = temp
-		p "Move #{x} to #{location}"
-	}
-	return deck
+class Game
+	def initialize(deck)
+		@deck = deck
+		@phand =[]
+		@ohand =[]
+		@first = true
+		shuffle()
+	end
+	
+	def shuffle
+		@deck.length.times{|x|
+			location = rand(@deck.length)
+			temp = @deck[location]
+			@deck[location] = @deck[x]
+			@deck[x] = temp
+		}
+
+		deal()
+	#return deck
+	end
+	
+	def deal
+		6.times{
+			@phand << @deck.shift
+			@ohand << @deck.shift
+		}
+		setup()
+	end
+
+	def setup
+		puts "  #{@ohand[0].b_line1}  #{@ohand[1].b_line1}  #{@ohand[2].b_line1}  #{@ohand[3].b_line1}  #{@ohand[4].b_line1}  #{@ohand[5].b_line1}"
+		puts "  #{@ohand[0].b_line2}  #{@ohand[1].b_line2}  #{@ohand[2].b_line2}  #{@ohand[3].b_line2}  #{@ohand[4].b_line2}  #{@ohand[5].b_line2}"
+		puts "  #{@ohand[0].b_line3}  #{@ohand[1].b_line3}  #{@ohand[2].b_line3}  #{@ohand[3].b_line3}  #{@ohand[4].b_line3}  #{@ohand[5].b_line3}"
+		puts "  #{@ohand[0].b_line4}  #{@ohand[1].b_line4}  #{@ohand[2].b_line4}  #{@ohand[3].b_line4}  #{@ohand[4].b_line4}  #{@ohand[5].b_line4}"
+		puts "  #{@ohand[0].b_line5}  #{@ohand[1].b_line5}  #{@ohand[2].b_line5}  #{@ohand[3].b_line5}  #{@ohand[4].b_line5}  #{@ohand[5].b_line5}"
+		puts "  #{@ohand[0].b_line6}  #{@ohand[1].b_line6}  #{@ohand[2].b_line6}  #{@ohand[3].b_line6}  #{@ohand[4].b_line6}  #{@ohand[5].b_line6}"
+		puts "  #{@ohand[0].b_line7}  #{@ohand[1].b_line7}  #{@ohand[2].b_line7}  #{@ohand[3].b_line7}  #{@ohand[4].b_line7}  #{@ohand[5].b_line7}"
+		puts " "
+		puts " 											               	                        T R U M P"
+		puts "                                             #{@deck[0].b_line1}  #{@deck[-1].line1}"
+		puts "                                             #{@deck[0].b_line2}  #{@deck[-1].line2}"
+		puts "                                             #{@deck[0].b_line3}  #{@deck[-1].line3}"
+		puts "                                             #{@deck[0].b_line4}  #{@deck[-1].line4}"
+		puts "                                             #{@deck[0].b_line5}  #{@deck[-1].line5}"
+		puts "                                             #{@deck[0].b_line6}  #{@deck[-1].line6}"
+		puts "                                             #{@deck[0].b_line7}  #{@deck[-1].line7}"
+		puts " "
+		puts " "
+		puts "  #{@phand[0].line1}  #{@phand[1].line1}  #{@phand[2].line1}  #{@phand[3].line1}  #{@phand[4].line1}  #{@phand[5].line1}"
+		puts "  #{@phand[0].line2}  #{@phand[1].line2}  #{@phand[2].line2}  #{@phand[3].line2}  #{@phand[4].line2}  #{@phand[5].line2}"
+		puts "  #{@phand[0].line3}  #{@phand[1].line3}  #{@phand[2].line3}  #{@phand[3].line3}  #{@phand[4].line3}  #{@phand[5].line3}"
+		puts "  #{@phand[0].line4}  #{@phand[1].line4}  #{@phand[2].line4}  #{@phand[3].line4}  #{@phand[4].line4}  #{@phand[5].line4}"
+		puts "  #{@phand[0].line5}  #{@phand[1].line5}  #{@phand[2].line5}  #{@phand[3].line5}  #{@phand[4].line5}  #{@phand[5].line5}"
+		puts "  #{@phand[0].line6}  #{@phand[1].line6}  #{@phand[2].line6}  #{@phand[3].line6}  #{@phand[4].line6}  #{@phand[5].line6}"
+		puts "  #{@phand[0].line7}  #{@phand[1].line7}  #{@phand[2].line7}  #{@phand[3].line7}  #{@phand[4].line7}  #{@phand[5].line7}"
+		turn()
+	end
+
+	def turn
+		if @first 
+			ptrump = 20
+			otrump = 20
+			@trump = @deck[-1]
+			
+			@ohand.each{|x|
+				if x.suit == @trump.suit
+					if x.value < otrump
+						otrump = x.value
+					end
+				end}
+
+			@phand.each{|x|
+				if x.suit == @trump.suit
+					if x.value < ptrump
+						ptrump = x.value
+					end
+				end}
+			if ptrump < otrump
+				puts " "
+				puts "Player is attacker"
+				@turn = "player"
+			else
+				puts " "
+				puts "Opponent is attacker"
+				@turn = "opponent"
+			end
+			@first = false
+		end
+	end
+
 end
+
 deck = []
 s6 = Card.new(
 	"spade",
@@ -118,7 +200,7 @@ sK = Card.new(
 deck << sK
 sA = Card.new(
 	"spade",
-	11,
+	14,
 	"║A      ║",
 	"║       ║",
 	"║   ♠   ║",
@@ -208,7 +290,7 @@ cK = Card.new(
 deck << cK
 cA = Card.new(
 	"club",
-	11,
+	14,
 	"║A      ║",
 	"║       ║",
 	"║   ♣   ║",
@@ -298,7 +380,7 @@ hK = Card.new(
 deck << hK
 hA = Card.new(
 	"heart",
-	11,
+	14,
 	"║A      ║",
 	"║       ║",
 	"║   ♥   ║",
@@ -388,7 +470,7 @@ dK = Card.new(
 deck << dK
 dA = Card.new(
 	"dimond",
-	11,
+	14,
 	"║A      ║",
 	"║       ║",
 	"║   ♦   ║",
@@ -397,80 +479,236 @@ dA = Card.new(
 	)
 deck << dA
 
-deck = shuffle(deck)
+start = Game.new(deck)
+# deck = shuffle(deck)
 
-puts "#{deck[0].line1} #{deck[1].line1} #{deck[2].line1} #{deck[3].line1}"
-puts "#{deck[0].line2} #{deck[1].line2} #{deck[2].line2} #{deck[3].line2}"
-puts "#{deck[0].line3} #{deck[1].line3} #{deck[2].line3} #{deck[3].line3}"
-puts "#{deck[0].line4} #{deck[1].line4} #{deck[2].line4} #{deck[3].line4}"
-puts "#{deck[0].line5} #{deck[1].line5} #{deck[2].line5} #{deck[3].line5}"
-puts "#{deck[0].line6} #{deck[1].line6} #{deck[2].line6} #{deck[3].line6}"
-puts "#{deck[0].line7} #{deck[1].line7} #{deck[2].line7} #{deck[3].line7}"
+# puts "#{deck[0].line1} #{deck[1].line1} #{deck[2].line1} #{deck[3].line1}"
+# puts "#{deck[0].line2} #{deck[1].line2} #{deck[2].line2} #{deck[3].line2}"
+# puts "#{deck[0].line3} #{deck[1].line3} #{deck[2].line3} #{deck[3].line3}"
+# puts "#{deck[0].line4} #{deck[1].line4} #{deck[2].line4} #{deck[3].line4}"
+# puts "#{deck[0].line5} #{deck[1].line5} #{deck[2].line5} #{deck[3].line5}"
+# puts "#{deck[0].line6} #{deck[1].line6} #{deck[2].line6} #{deck[3].line6}"
+# puts "#{deck[0].line7} #{deck[1].line7} #{deck[2].line7} #{deck[3].line7}"
 
-puts "#{deck[4].line1} #{deck[5].line1} #{deck[6].line1} #{deck[7].line1}"
-puts "#{deck[4].line2} #{deck[5].line2} #{deck[6].line2} #{deck[7].line2}"
-puts "#{deck[4].line3} #{deck[5].line3} #{deck[6].line3} #{deck[7].line3}"
-puts "#{deck[4].line4} #{deck[5].line4} #{deck[6].line4} #{deck[7].line4}"
-puts "#{deck[4].line5} #{deck[5].line5} #{deck[6].line5} #{deck[7].line5}"
-puts "#{deck[4].line6} #{deck[5].line6} #{deck[6].line6} #{deck[7].line6}"
-puts "#{deck[4].line7} #{deck[5].line7} #{deck[6].line7} #{deck[7].line7}"
+# puts "#{deck[4].line1} #{deck[5].line1} #{deck[6].line1} #{deck[7].line1}"
+# puts "#{deck[4].line2} #{deck[5].line2} #{deck[6].line2} #{deck[7].line2}"
+# puts "#{deck[4].line3} #{deck[5].line3} #{deck[6].line3} #{deck[7].line3}"
+# puts "#{deck[4].line4} #{deck[5].line4} #{deck[6].line4} #{deck[7].line4}"
+# puts "#{deck[4].line5} #{deck[5].line5} #{deck[6].line5} #{deck[7].line5}"
+# puts "#{deck[4].line6} #{deck[5].line6} #{deck[6].line6} #{deck[7].line6}"
+# puts "#{deck[4].line7} #{deck[5].line7} #{deck[6].line7} #{deck[7].line7}"
 
-puts "#{deck[8].line1} #{deck[9].line1} #{deck[10].line1} #{deck[11].line1}"
-puts "#{deck[8].line2} #{deck[9].line2} #{deck[10].line2} #{deck[11].line2}"
-puts "#{deck[8].line3} #{deck[9].line3} #{deck[10].line3} #{deck[11].line3}"
-puts "#{deck[8].line4} #{deck[9].line4} #{deck[10].line4} #{deck[11].line4}"
-puts "#{deck[8].line5} #{deck[9].line5} #{deck[10].line5} #{deck[11].line5}"
-puts "#{deck[8].line6} #{deck[9].line6} #{deck[10].line6} #{deck[11].line6}"
-puts "#{deck[8].line7} #{deck[9].line7} #{deck[10].line7} #{deck[11].line7}"
+# puts "#{deck[8].line1} #{deck[9].line1} #{deck[10].line1} #{deck[11].line1}"
+# puts "#{deck[8].line2} #{deck[9].line2} #{deck[10].line2} #{deck[11].line2}"
+# puts "#{deck[8].line3} #{deck[9].line3} #{deck[10].line3} #{deck[11].line3}"
+# puts "#{deck[8].line4} #{deck[9].line4} #{deck[10].line4} #{deck[11].line4}"
+# puts "#{deck[8].line5} #{deck[9].line5} #{deck[10].line5} #{deck[11].line5}"
+# puts "#{deck[8].line6} #{deck[9].line6} #{deck[10].line6} #{deck[11].line6}"
+# puts "#{deck[8].line7} #{deck[9].line7} #{deck[10].line7} #{deck[11].line7}"
 
-puts "#{deck[12].line1} #{deck[13].line1} #{deck[14].line1} #{deck[15].line1}"
-puts "#{deck[12].line2} #{deck[13].line2} #{deck[14].line2} #{deck[15].line2}"
-puts "#{deck[12].line3} #{deck[13].line3} #{deck[14].line3} #{deck[15].line3}"
-puts "#{deck[12].line4} #{deck[13].line4} #{deck[14].line4} #{deck[15].line4}"
-puts "#{deck[12].line5} #{deck[13].line5} #{deck[14].line5} #{deck[15].line5}"
-puts "#{deck[12].line6} #{deck[13].line6} #{deck[14].line6} #{deck[15].line6}"
-puts "#{deck[12].line7} #{deck[13].line7} #{deck[14].line7} #{deck[15].line7}"
+# puts "#{deck[12].line1} #{deck[13].line1} #{deck[14].line1} #{deck[15].line1}"
+# puts "#{deck[12].line2} #{deck[13].line2} #{deck[14].line2} #{deck[15].line2}"
+# puts "#{deck[12].line3} #{deck[13].line3} #{deck[14].line3} #{deck[15].line3}"
+# puts "#{deck[12].line4} #{deck[13].line4} #{deck[14].line4} #{deck[15].line4}"
+# puts "#{deck[12].line5} #{deck[13].line5} #{deck[14].line5} #{deck[15].line5}"
+# puts "#{deck[12].line6} #{deck[13].line6} #{deck[14].line6} #{deck[15].line6}"
+# puts "#{deck[12].line7} #{deck[13].line7} #{deck[14].line7} #{deck[15].line7}"
 
-puts "#{deck[16].line1} #{deck[17].line1} #{deck[18].line1} #{deck[19].line1}"
-puts "#{deck[16].line2} #{deck[17].line2} #{deck[18].line2} #{deck[19].line2}"
-puts "#{deck[16].line3} #{deck[17].line3} #{deck[18].line3} #{deck[19].line3}"
-puts "#{deck[16].line4} #{deck[17].line4} #{deck[18].line4} #{deck[19].line4}"
-puts "#{deck[16].line5} #{deck[17].line5} #{deck[18].line5} #{deck[19].line5}"
-puts "#{deck[16].line6} #{deck[17].line6} #{deck[18].line6} #{deck[19].line6}"
-puts "#{deck[16].line7} #{deck[17].line7} #{deck[18].line7} #{deck[19].line7}"
+# puts "#{deck[16].line1} #{deck[17].line1} #{deck[18].line1} #{deck[19].line1}"
+# puts "#{deck[16].line2} #{deck[17].line2} #{deck[18].line2} #{deck[19].line2}"
+# puts "#{deck[16].line3} #{deck[17].line3} #{deck[18].line3} #{deck[19].line3}"
+# puts "#{deck[16].line4} #{deck[17].line4} #{deck[18].line4} #{deck[19].line4}"
+# puts "#{deck[16].line5} #{deck[17].line5} #{deck[18].line5} #{deck[19].line5}"
+# puts "#{deck[16].line6} #{deck[17].line6} #{deck[18].line6} #{deck[19].line6}"
+# puts "#{deck[16].line7} #{deck[17].line7} #{deck[18].line7} #{deck[19].line7}"
 
-puts "#{deck[20].line1} #{deck[21].line1} #{deck[22].line1} #{deck[23].line1}"
-puts "#{deck[20].line2} #{deck[21].line2} #{deck[22].line2} #{deck[23].line2}"
-puts "#{deck[20].line3} #{deck[21].line3} #{deck[22].line3} #{deck[23].line3}"
-puts "#{deck[20].line4} #{deck[21].line4} #{deck[22].line4} #{deck[23].line4}"
-puts "#{deck[20].line5} #{deck[21].line5} #{deck[22].line5} #{deck[23].line5}"
-puts "#{deck[20].line6} #{deck[21].line6} #{deck[22].line6} #{deck[23].line6}"
-puts "#{deck[20].line7} #{deck[21].line7} #{deck[22].line7} #{deck[23].line7}"
+# puts "#{deck[20].line1} #{deck[21].line1} #{deck[22].line1} #{deck[23].line1}"
+# puts "#{deck[20].line2} #{deck[21].line2} #{deck[22].line2} #{deck[23].line2}"
+# puts "#{deck[20].line3} #{deck[21].line3} #{deck[22].line3} #{deck[23].line3}"
+# puts "#{deck[20].line4} #{deck[21].line4} #{deck[22].line4} #{deck[23].line4}"
+# puts "#{deck[20].line5} #{deck[21].line5} #{deck[22].line5} #{deck[23].line5}"
+# puts "#{deck[20].line6} #{deck[21].line6} #{deck[22].line6} #{deck[23].line6}"
+# puts "#{deck[20].line7} #{deck[21].line7} #{deck[22].line7} #{deck[23].line7}"
 
-puts "#{deck[24].line1} #{deck[25].line1} #{deck[26].line1} #{deck[27].line1}"
-puts "#{deck[24].line2} #{deck[25].line2} #{deck[26].line2} #{deck[27].line2}"
-puts "#{deck[24].line3} #{deck[25].line3} #{deck[26].line3} #{deck[27].line3}"
-puts "#{deck[24].line4} #{deck[25].line4} #{deck[26].line4} #{deck[27].line4}"
-puts "#{deck[24].line5} #{deck[25].line5} #{deck[26].line5} #{deck[27].line5}"
-puts "#{deck[24].line6} #{deck[25].line6} #{deck[26].line6} #{deck[27].line6}"
-puts "#{deck[24].line7} #{deck[25].line7} #{deck[26].line7} #{deck[27].line7}"
+# puts "#{deck[24].line1} #{deck[25].line1} #{deck[26].line1} #{deck[27].line1}"
+# puts "#{deck[24].line2} #{deck[25].line2} #{deck[26].line2} #{deck[27].line2}"
+# puts "#{deck[24].line3} #{deck[25].line3} #{deck[26].line3} #{deck[27].line3}"
+# puts "#{deck[24].line4} #{deck[25].line4} #{deck[26].line4} #{deck[27].line4}"
+# puts "#{deck[24].line5} #{deck[25].line5} #{deck[26].line5} #{deck[27].line5}"
+# puts "#{deck[24].line6} #{deck[25].line6} #{deck[26].line6} #{deck[27].line6}"
+# puts "#{deck[24].line7} #{deck[25].line7} #{deck[26].line7} #{deck[27].line7}"
 
-puts "#{deck[28].line1} #{deck[29].line1} #{deck[30].line1} #{deck[30].line1}"
-puts "#{deck[28].line2} #{deck[29].line2} #{deck[30].line2} #{deck[30].line2}"
-puts "#{deck[28].line3} #{deck[29].line3} #{deck[30].line3} #{deck[30].line3}"
-puts "#{deck[28].line4} #{deck[29].line4} #{deck[30].line4} #{deck[30].line4}"
-puts "#{deck[28].line5} #{deck[29].line5} #{deck[30].line5} #{deck[30].line5}"
-puts "#{deck[28].line6} #{deck[29].line6} #{deck[30].line6} #{deck[30].line6}"
-puts "#{deck[28].line7} #{deck[29].line7} #{deck[30].line7} #{deck[30].line7}"
+# puts "#{deck[28].line1} #{deck[29].line1} #{deck[30].line1} #{deck[30].line1}"
+# puts "#{deck[28].line2} #{deck[29].line2} #{deck[30].line2} #{deck[30].line2}"
+# puts "#{deck[28].line3} #{deck[29].line3} #{deck[30].line3} #{deck[30].line3}"
+# puts "#{deck[28].line4} #{deck[29].line4} #{deck[30].line4} #{deck[30].line4}"
+# puts "#{deck[28].line5} #{deck[29].line5} #{deck[30].line5} #{deck[30].line5}"
+# puts "#{deck[28].line6} #{deck[29].line6} #{deck[30].line6} #{deck[30].line6}"
+# puts "#{deck[28].line7} #{deck[29].line7} #{deck[30].line7} #{deck[30].line7}"
 
-puts "#{deck[31].line1} #{deck[32].line1} #{deck[33].line1} #{deck[34].line1}"
-puts "#{deck[31].line2} #{deck[32].line2} #{deck[33].line2} #{deck[34].line2}"
-puts "#{deck[31].line3} #{deck[32].line3} #{deck[33].line3} #{deck[34].line3}"
-puts "#{deck[31].line4} #{deck[32].line4} #{deck[33].line4} #{deck[34].line4}"
-puts "#{deck[31].line5} #{deck[32].line5} #{deck[33].line5} #{deck[34].line5}"
-puts "#{deck[31].line6} #{deck[32].line6} #{deck[33].line6} #{deck[34].line6}"
-puts "#{deck[31].line7} #{deck[32].line7} #{deck[33].line7} #{deck[34].line7}"
+# puts "#{deck[31].line1} #{deck[32].line1} #{deck[33].line1} #{deck[34].line1}"
+# puts "#{deck[31].line2} #{deck[32].line2} #{deck[33].line2} #{deck[34].line2}"
+# puts "#{deck[31].line3} #{deck[32].line3} #{deck[33].line3} #{deck[34].line3}"
+# puts "#{deck[31].line4} #{deck[32].line4} #{deck[33].line4} #{deck[34].line4}"
+# puts "#{deck[31].line5} #{deck[32].line5} #{deck[33].line5} #{deck[34].line5}"
+# puts "#{deck[31].line6} #{deck[32].line6} #{deck[33].line6} #{deck[34].line6}"
+# puts "#{deck[31].line7} #{deck[32].line7} #{deck[33].line7} #{deck[34].line7}"
 
+# c6count = 0
+# c7count = 0
+# c8count = 0
+# c9count = 0
+# c10count = 0
+# cJcount = 0
+# cQcount = 0
+# cKcount = 0
+# cAcount = 0
+
+# d6count = 0
+# d7count = 0
+# d8count = 0
+# d9count = 0
+# d10count = 0
+# dJcount = 0
+# dQcount = 0
+# dKcount = 0
+# dAcount = 0
+
+# h6count = 0
+# h7count = 0
+# h8count = 0
+# h9count = 0
+# h10count = 0
+# hJcount = 0
+# hQcount = 0
+# hKcount = 0
+# hAcount = 0
+
+# s6count = 0
+# s7count = 0
+# s8count = 0
+# s9count = 0
+# s10count = 0
+# sJcount = 0
+# sQcount = 0
+# sKcount = 0
+# sAcount = 0
+
+# deck.each{|x|
+# 	if x.suit == "club" && x.value == 6
+# 		c6count += 1
+# 	elsif x.suit == "club" && x.value == 7
+# 		c7count += 1
+# 	elsif x.suit == "club" && x.value == 8
+# 		c8count += 1
+# 	elsif x.suit == "club" && x.value == 9
+# 		c9count += 1
+# 	elsif x.suit == "club" && x.value == 10
+# 		c10count += 1
+# 	elsif x.suit == "club" && x.value == 11
+# 		cJcount += 1
+# 	elsif x.suit == "club" && x.value == 12
+# 		cQcount += 1
+# 	elsif x.suit == "club" && x.value == 13
+# 		cKcount += 1
+# 	elsif x.suit == "club" && x.value == 14
+# 		cAcount += 1
+# 	elsif x.suit == "spade" && x.value == 6
+# 		s6count += 1
+# 	elsif x.suit == "spade" && x.value == 7
+# 		s7count += 1
+# 	elsif x.suit == "spade" && x.value == 8
+# 		s8count += 1
+# 	elsif x.suit == "spade" && x.value == 9
+# 		s9count += 1
+# 	elsif x.suit == "spade" && x.value == 10
+# 		s10count += 1
+# 	elsif x.suit == "spade" && x.value == 11
+# 		sJcount += 1
+# 	elsif x.suit == "spade" && x.value == 12
+# 		sQcount += 1
+# 	elsif x.suit == "spade" && x.value == 13
+# 		sKcount += 1
+# 	elsif x.suit == "spade" && x.value == 14
+# 		sAcount += 1
+# 	elsif x.suit == "heart" && x.value == 6
+# 		h6count += 1
+# 	elsif x.suit == "heart" && x.value == 7
+# 		h7count += 1
+# 	elsif x.suit == "heart" && x.value == 8
+# 		h8count += 1
+# 	elsif x.suit == "heart" && x.value == 9
+# 		h9count += 1
+# 	elsif x.suit == "heart" && x.value == 10
+# 		h10count += 1
+# 	elsif x.suit == "heart" && x.value == 11
+# 		hJcount += 1
+# 	elsif x.suit == "heart" && x.value == 12
+# 		hQcount += 1
+# 	elsif x.suit == "heart" && x.value == 13
+# 		hKcount += 1
+# 	elsif x.suit == "heart" && x.value == 14
+# 		hAcount += 1
+# 	elsif x.suit == "dimond" && x.value == 6
+# 		d6count += 1
+# 	elsif x.suit == "dimond" && x.value == 7
+# 		d7count += 1
+# 	elsif x.suit == "dimond" && x.value == 8
+# 		d8count += 1
+# 	elsif x.suit == "dimond" && x.value == 9
+# 		d9count += 1
+# 	elsif x.suit == "dimond" && x.value == 10
+# 		d10count += 1
+# 	elsif x.suit == "dimond" && x.value == 11
+# 		dJcount += 1
+# 	elsif x.suit == "dimond" && x.value == 12
+# 		dQcount += 1
+# 	elsif x.suit == "dimond" && x.value == 13
+# 		dKcount += 1
+# 	elsif x.suit == "dimond" && x.value == 14
+# 		dAcount += 1
+# 	end 			
+# }
+
+# puts "c6 count = #{c6count}"
+# puts "c7 count = #{c7count}"
+# puts "c8 count = #{c8count}"
+# puts "c9 count = #{c9count}"
+# puts "c10 count = #{c10count}"
+# puts "cJ count = #{cJcount}"
+# puts "cQ count = #{cQcount}"
+# puts "cK count = #{cKcount}"
+# puts "cA count = #{cAcount}"
+# puts " "
+# puts "d6 count = #{d6count}"
+# puts "d7 count = #{d7count}"
+# puts "d8 count = #{d8count}"
+# puts "d9 count = #{d9count}"
+# puts "d10 count = #{d10count}"
+# puts "dJ count = #{dJcount}"
+# puts "dQ count = #{dQcount}"
+# puts "dK count = #{dKcount}"
+# puts "dA count = #{dAcount}"
+# puts " "
+# puts "s6 count = #{s6count}"
+# puts "s7 count = #{s7count}"
+# puts "s8 count = #{s8count}"
+# puts "s9 count = #{s9count}"
+# puts "s10 count = #{s10count}"
+# puts "sJ count = #{sJcount}"
+# puts "sQ count = #{sQcount}"
+# puts "sK count = #{sKcount}"
+# puts "sA count = #{sAcount}"
+# puts " "
+# puts "h6 count = #{h6count}"
+# puts "h7 count = #{h7count}"
+# puts "h8 count = #{h8count}"
+# puts "h9 count = #{h9count}"
+# puts "h10 count = #{h10count}"
+# puts "hJ count = #{hJcount}"
+# puts "hQ count = #{hQcount}"
+# puts "hK count = #{hKcount}"
+# puts "hA count = #{hAcount}"
 
 #deck.each{|test|
 	# puts "#{c6.line1} #{d6.line1} #{s6.line1} #{h6.line1}"
