@@ -26,12 +26,20 @@ class Card
 end
 
 class Game
-	def initialize(deck)
-		@deck = deck
+	def initialize()
+		@deck = create_deck
 		@phand =[]
 		@ohand =[]
 		@first = true
 		shuffle()
+		@attack = nil
+		# @attack2 = nil
+		# @attack3 = nil
+		# @attack4 = nil
+		@defend = nil
+		# @defend1 = nil
+		# @defend1 = nil
+		# @defend1 = nil
 	end
 	
 	def shuffle
@@ -55,6 +63,8 @@ class Game
 	end
 
 	def setup
+		#space = "  "
+		puts "\n"
 		puts "  #{@ohand[0].b_line1}  #{@ohand[1].b_line1}  #{@ohand[2].b_line1}  #{@ohand[3].b_line1}  #{@ohand[4].b_line1}  #{@ohand[5].b_line1}"
 		puts "  #{@ohand[0].b_line2}  #{@ohand[1].b_line2}  #{@ohand[2].b_line2}  #{@ohand[3].b_line2}  #{@ohand[4].b_line2}  #{@ohand[5].b_line2}"
 		puts "  #{@ohand[0].b_line3}  #{@ohand[1].b_line3}  #{@ohand[2].b_line3}  #{@ohand[3].b_line3}  #{@ohand[4].b_line3}  #{@ohand[5].b_line3}"
@@ -62,17 +72,45 @@ class Game
 		puts "  #{@ohand[0].b_line5}  #{@ohand[1].b_line5}  #{@ohand[2].b_line5}  #{@ohand[3].b_line5}  #{@ohand[4].b_line5}  #{@ohand[5].b_line5}"
 		puts "  #{@ohand[0].b_line6}  #{@ohand[1].b_line6}  #{@ohand[2].b_line6}  #{@ohand[3].b_line6}  #{@ohand[4].b_line6}  #{@ohand[5].b_line6}"
 		puts "  #{@ohand[0].b_line7}  #{@ohand[1].b_line7}  #{@ohand[2].b_line7}  #{@ohand[3].b_line7}  #{@ohand[4].b_line7}  #{@ohand[5].b_line7}"
-		puts " "
-		puts " 											               	                        T R U M P"
-		puts "                                             #{@deck[0].b_line1}  #{@deck[-1].line1}"
-		puts "                                             #{@deck[0].b_line2}  #{@deck[-1].line2}"
-		puts "                                             #{@deck[0].b_line3}  #{@deck[-1].line3}"
-		puts "                                             #{@deck[0].b_line4}  #{@deck[-1].line4}"
-		puts "                                             #{@deck[0].b_line5}  #{@deck[-1].line5}"
-		puts "                                             #{@deck[0].b_line6}  #{@deck[-1].line6}"
-		puts "                                             #{@deck[0].b_line7}  #{@deck[-1].line7}"
-		puts " "
-		puts " "
+		
+		if @attack == nil
+			puts "\n"
+			puts "                                                        T R U M P"
+			puts "                                             #{@deck[0].b_line1}  #{@deck[-1].line1}"
+			puts "                                             #{@deck[0].b_line2}  #{@deck[-1].line2}"
+			puts "                                             #{@deck[0].b_line3}  #{@deck[-1].line3}"
+			puts "                                             #{@deck[0].b_line4}  #{@deck[-1].line4}"
+			puts "                                             #{@deck[0].b_line5}  #{@deck[-1].line5}"
+			puts "                                             #{@deck[0].b_line6}  #{@deck[-1].line6}"
+			puts "                                             #{@deck[0].b_line7}  #{@deck[-1].line7}"
+			puts "\n"
+			puts "\n"
+		elsif @defend == nil
+			puts "\n"
+			puts "                 #{@attack.line1}                              T R U M P"
+			puts "                 #{@attack.line2}                   #{@deck[0].b_line1}  #{@deck[-1].line1}"
+			puts "                 #{@attack.line3}                   #{@deck[0].b_line2}  #{@deck[-1].line2}"
+			puts "                 #{@attack.line4}                   #{@deck[0].b_line3}  #{@deck[-1].line3}"
+			puts "                 #{@attack.line5}                   #{@deck[0].b_line4}  #{@deck[-1].line4}"
+			puts "                 #{@attack.line6}                   #{@deck[0].b_line5}  #{@deck[-1].line5}"
+			puts "                 #{@attack.line7}                   #{@deck[0].b_line6}  #{@deck[-1].line6}"
+			puts "                                             #{@deck[0].b_line7}  #{@deck[-1].line7}"
+			puts "\n"
+			puts "\n"
+		else
+			puts "\n"
+			puts "                 #{@attack.line1}                                     T R U M P"
+			puts "                 #{@attack.line2}                   #{@deck[0].b_line1}  #{@deck[-1].line1}"
+			puts "                 #{@attack.line3}                   #{@deck[0].b_line2}  #{@deck[-1].line2}"
+			puts "                 #{@defend.line1}                   #{@deck[0].b_line3}  #{@deck[-1].line3}"
+			puts "                 #{@defend.line2}                   #{@deck[0].b_line4}  #{@deck[-1].line4}"
+			puts "                 #{@defend.line3}                   #{@deck[0].b_line5}  #{@deck[-1].line5}"
+			puts "                 #{@defend.line4}                   #{@deck[0].b_line6}  #{@deck[-1].line6}"
+			puts "                 #{@defend.line5}                   #{@deck[0].b_line7}  #{@deck[-1].line7}"
+			puts "                 #{@defend.line6}"
+			puts "                 #{@defend.line7}"
+		end
+
 		puts "  #{@phand[0].line1}  #{@phand[1].line1}  #{@phand[2].line1}  #{@phand[3].line1}  #{@phand[4].line1}  #{@phand[5].line1}"
 		puts "  #{@phand[0].line2}  #{@phand[1].line2}  #{@phand[2].line2}  #{@phand[3].line2}  #{@phand[4].line2}  #{@phand[5].line2}"
 		puts "  #{@phand[0].line3}  #{@phand[1].line3}  #{@phand[2].line3}  #{@phand[3].line3}  #{@phand[4].line3}  #{@phand[5].line3}"
@@ -103,7 +141,7 @@ class Game
 					end
 				end}
 			if ptrump < otrump
-				puts "      A          B          C          D          E          F "
+				puts "      1          2          3          4          5          6 "
 				puts "Player is attacker. Which card would you like to play?"
 				@turn = "player"
 			else
@@ -115,371 +153,409 @@ class Game
 		end
 	end
 
+	def playermove(card)
+		if @turn == "player"
+			@attack = @phand[card-1] 
+			#@phand.delete_at(card-1)
+		end
+		setup()
+		opponentmove()
+	end
+
+	def opponentmove
+		otrump = 20
+		if @turn == "player"
+			@defend = nil
+			@ohand.each{|x|
+				if x.suit == @attack.suit
+					if x.value > @attack.value
+						@defend = x
+					end
+				end}
+			if @defend == nil
+				@ohand.each{|x|
+				if x.suit == @trump.suit
+					if x.value < otrump
+						@defend = x
+					end
+				end}
+			end
+			if @defend == nil
+				puts "The opponent takes."
+			end
+		end
+		setup()
+	end
 end
 
-deck = []
-s6 = Card.new(
-	"spade",
-	6,
-	"║6      ║",
-	"║ ♠   ♠ ║",
-	"║ ♠   ♠ ║",
-	"║ ♠   ♠ ║",
-	"║      6║"
-	)
-deck << s6
-s7 = Card.new(
-	"spade",
-	7,
-	"║7      ║",
-	"║ ♠   ♠ ║",
-	"║ ♠ ♠ ♠ ║",
-	"║ ♠   ♠ ║",
-	"║      7║"
-	)
-deck << s7
-s8 = Card.new(
-	"spade",
-	8,
-	"║8      ║",
-	"║ ♠ ♠ ♠ ║",
-	"║  ♠ ♠  ║",
-	"║ ♠ ♠ ♠ ║",
-	"║      8║"
-	)
-deck << s8
-s9 = Card.new(
-	"spade",
-	9,
-	"║9      ║",
-	"║ ♠ ♠ ♠ ║",
-	"║ ♠ ♠ ♠ ║",
-	"║ ♠ ♠ ♠ ║",
-	"║      9║"
-	)
-deck << s9
-s10 = Card.new(
-	"spade",
-	10,
-	"║10     ║",
-	"║♠ ♠ ♠ ♠║",
-	"║ ♠   ♠ ║",
-	"║♠ ♠ ♠ ♠║",
-	"║     10║"
-	)
-deck << s10
-sJ = Card.new(
-	"spade",
-	11,
-	"║J      ║",
-	"║ A  ♠  ║",
-	"║   C   ║",
-    "║  ♠  K ║",
-	"║      J║"
-	)
-deck << sJ
-sQ = Card.new(
-	"spade",
-	12,
-	"║Q      ║",
-	"║ °\\°/° ║",
-    "║  |♠|  ║",
-    "║ @@@@@ ║",
-	"║      Q║"
-	)
-deck << sQ
-sK = Card.new(
-	"spade",
-	13,
-	"║K      ║",
-	"║ ♠ ♠ ♠ ║",
-	"║ |VVV| ║",
-    "║ |___| ║",
-	"║      K║"
-	)
-deck << sK
-sA = Card.new(
-	"spade",
-	14,
-	"║A      ║",
-	"║       ║",
-	"║   ♠   ║",
-    "║       ║",
-	"║      A║"
-	)
-deck << sA
-c6 = Card.new(
-	"club",
-	6,
-	"║6      ║",
-	"║ ♣   ♣ ║",
-	"║ ♣   ♣ ║",
-	"║ ♣   ♣ ║",
-	"║      6║"
-	)
-deck << c6
-c7 = Card.new(
-	"club",
-	7,
-	"║7      ║",
-	"║ ♣   ♣ ║",
-	"║ ♣ ♣ ♣ ║",
-	"║ ♣   ♣ ║",
-	"║      7║"
-	)
-deck << c7
-c8 = Card.new(
-	"club",
-	8,
-	"║8      ║",
-	"║ ♣ ♣ ♣ ║",
-	"║  ♣ ♣  ║",
-	"║ ♣ ♣ ♣ ║",
-	"║      8║"
-	)
-deck << c8
-c9 = Card.new(
-	"club",
-	9,
-	"║9      ║",
-	"║ ♣ ♣ ♣ ║",
-	"║ ♣ ♣ ♣ ║",
-	"║ ♣ ♣ ♣ ║",
-	"║      9║"
-	)
-deck << c9
-c10 = Card.new(
-	"club",
-	10,
-	"║10     ║",
-	"║♣ ♣ ♣ ♣║",
-	"║ ♣   ♣ ║",
-	"║♣ ♣ ♣ ♣║",
-	"║     10║"
-	)
-deck << c10
-cJ = Card.new(
-	"club",
-	11,
-	"║J      ║",
-	"║ A  ♣  ║",
-	"║   C   ║",
-    "║  ♣  K ║",
-	"║      J║"
-	)
-deck << cJ
-cQ = Card.new(
-	"club",
-	12,
-	"║Q      ║",
-	"║ °\\°/° ║",
-    "║  |♣|  ║",
-    "║ @@@@@ ║",
-	"║      Q║"
-	)
-deck << cQ
-cK = Card.new(
-	"club",
-	13,
-	"║K      ║",
-	"║ ♣ ♣ ♣ ║",
-	"║ |VVV| ║",
-    "║ |___| ║",
-	"║      K║"
-	)
-deck << cK
-cA = Card.new(
-	"club",
-	14,
-	"║A      ║",
-	"║       ║",
-	"║   ♣   ║",
-    "║       ║",
-	"║      A║"
-	)
-deck << cA
-h6 = Card.new(
-	"heart",
-	6,
-	"║6      ║",
-	"║ ♥   ♥ ║",
-	"║ ♥   ♥ ║",
-	"║ ♥   ♥ ║",
-	"║      6║"
-	)
-deck << h6
-h7 = Card.new(
-	"heart",
-	7,
-	"║7      ║",
-	"║ ♥   ♥ ║",
-	"║ ♥ ♥ ♥ ║",
-	"║ ♥   ♥ ║",
-	"║      7║"
-	)
-deck << h7
-h8 = Card.new(
-	"heart",
-	8,
-	"║8      ║",
-	"║ ♥ ♥ ♥ ║",
-	"║  ♥ ♥  ║",
-	"║ ♥ ♥ ♥ ║",
-	"║      8║"
-	)
-deck << h8
-h9 = Card.new(
-	"heart",
-	9,
-	"║9      ║",
-	"║ ♥ ♥ ♥ ║",
-	"║ ♥ ♥ ♥ ║",
-	"║ ♥ ♥ ♥ ║",
-	"║      9║"
-	)
-deck << h9
-h10 = Card.new(
-	"heart",
-	10,
-	"║10     ║",
-	"║♥ ♥ ♥ ♥║",
-	"║ ♥   ♥ ║",
-	"║♥ ♥ ♥ ♥║",
-	"║     10║"
-	)
-deck << h10
-hJ = Card.new(
-	"heart",
-	11,
-	"║J      ║",
-	"║ A  ♥  ║",
-	"║   C   ║",
-    "║  ♥  K ║",
-	"║      J║"
-	)
-deck << hJ
-hQ = Card.new(
-	"heart",
-	12,
-	"║Q      ║",
-	"║ °\\°/° ║",
-    "║  |♥|  ║",
-    "║ @@@@@ ║",
-	"║      Q║"
-	)
-deck << hQ
-hK = Card.new(
-	"heart",
-	13,
-	"║K      ║",
-	"║ ♥ ♥ ♥ ║",
-	"║ |VVV| ║",
-    "║ |___| ║",
-	"║      K║"
-	)
-deck << hK
-hA = Card.new(
-	"heart",
-	14,
-	"║A      ║",
-	"║       ║",
-	"║   ♥   ║",
-    "║       ║",
-	"║      A║"
-	)
-deck << hA
-d6 = Card.new(
-	"dimond",
-	6,
-	"║6      ║",
-	"║ ♦   ♦ ║",
-	"║ ♦   ♦ ║",
-	"║ ♦   ♦ ║",
-	"║      6║"
-	)
-deck << d6
-d7 = Card.new(
-	"dimond",
-	7,
-	"║7      ║",
-	"║ ♦   ♦ ║",
-	"║ ♦ ♦ ♦ ║",
-	"║ ♦   ♦ ║",
-	"║      7║"
-	)
-deck << d7
-d8 = Card.new(
-	"dimond",
-	8,
-	"║8      ║",
-	"║ ♦ ♦ ♦ ║",
-	"║  ♦ ♦  ║",
-	"║ ♦ ♦ ♦ ║",
-	"║      8║"
-	)
-deck << d8
-d9 = Card.new(
-	"dimond",
-	9,
-	"║9      ║",
-	"║ ♦ ♦ ♦ ║",
-	"║ ♦ ♦ ♦ ║",
-	"║ ♦ ♦ ♦ ║",
-	"║      9║"
-	)
-deck << d9
-d10 = Card.new(
-	"dimond",
-	10,
-	"║10     ║",
-	"║♦ ♦ ♦ ♦║",
-	"║ ♦   ♦ ║",
-	"║♦ ♦ ♦ ♦║",
-	"║     10║"
-	)
-deck << d10
-dJ = Card.new(
-	"dimond",
-	11,
-	"║J      ║",
-	"║ A  ♦  ║",
-	"║   C   ║",
-    "║  ♦  K ║",
-	"║      J║"
-	)
-deck << dJ
-dQ = Card.new(
-	"dimond",
-	12,
-	"║Q      ║",
-	"║ °\\°/° ║",
-    "║  |♦|  ║",
-    "║ @@@@@ ║",
-	"║      Q║"
-	)
-deck << dQ
-dK = Card.new(
-	"dimond",
-	13,
-	"║K      ║",
-	"║ ♦ ♦ ♦ ║",
-	"║ |VVV| ║",
-    "║ |___| ║",
-	"║      K║"
-	)
-deck << dK
-dA = Card.new(
-	"dimond",
-	14,
-	"║A      ║",
-	"║       ║",
-	"║   ♦   ║",
-    "║       ║",
-	"║      A║"
-	)
-deck << dA
+def create_deck
+	deck = []
+	s6 = Card.new(
+		"spade",
+		6,
+		"║6      ║",
+		"║ ♠   ♠ ║",
+		"║ ♠   ♠ ║",
+		"║ ♠   ♠ ║",
+		"║      6║"
+		)
+	deck << s6
+	s7 = Card.new(
+		"spade",
+		7,
+		"║7      ║",
+		"║ ♠   ♠ ║",
+		"║ ♠ ♠ ♠ ║",
+		"║ ♠   ♠ ║",
+		"║      7║"
+		)
+	deck << s7
+	s8 = Card.new(
+		"spade",
+		8,
+		"║8      ║",
+		"║ ♠ ♠ ♠ ║",
+		"║  ♠ ♠  ║",
+		"║ ♠ ♠ ♠ ║",
+		"║      8║"
+		)
+	deck << s8
+	s9 = Card.new(
+		"spade",
+		9,
+		"║9      ║",
+		"║ ♠ ♠ ♠ ║",
+		"║ ♠ ♠ ♠ ║",
+		"║ ♠ ♠ ♠ ║",
+		"║      9║"
+		)
+	deck << s9
+	s10 = Card.new(
+		"spade",
+		10,
+		"║10     ║",
+		"║♠ ♠ ♠ ♠║",
+		"║ ♠   ♠ ║",
+		"║♠ ♠ ♠ ♠║",
+		"║     10║"
+		)
+	deck << s10
+	sJ = Card.new(
+		"spade",
+		11,
+		"║J      ║",
+		"║ A  ♠  ║",
+		"║   C   ║",
+	    "║  ♠  K ║",
+		"║      J║"
+		)
+	deck << sJ
+	sQ = Card.new(
+		"spade",
+		12,
+		"║Q      ║",
+		"║ °\\♠/° ║",
+	    "║  |°|  ║",
+	    "║ @@@@@ ║",
+		"║      Q║"
+		)
+	deck << sQ
+	sK = Card.new(
+		"spade",
+		13,
+		"║K      ║",
+		"║ ♠ ♠ ♠ ║",
+		"║ |VVV| ║",
+	    "║ |___| ║",
+		"║      K║"
+		)
+	deck << sK
+	sA = Card.new(
+		"spade",
+		14,
+		"║A♠     ║",
+		"║       ║",
+		"║   ♠   ║",
+	    "║       ║",
+		"║     ♠A║"
+		)
+	deck << sA
+	c6 = Card.new(
+		"club",
+		6,
+		"║6      ║",
+		"║ ♣   ♣ ║",
+		"║ ♣   ♣ ║",
+		"║ ♣   ♣ ║",
+		"║      6║"
+		)
+	deck << c6
+	c7 = Card.new(
+		"club",
+		7,
+		"║7      ║",
+		"║ ♣   ♣ ║",
+		"║ ♣ ♣ ♣ ║",
+		"║ ♣   ♣ ║",
+		"║      7║"
+		)
+	deck << c7
+	c8 = Card.new(
+		"club",
+		8,
+		"║8      ║",
+		"║ ♣ ♣ ♣ ║",
+		"║  ♣ ♣  ║",
+		"║ ♣ ♣ ♣ ║",
+		"║      8║"
+		)
+	deck << c8
+	c9 = Card.new(
+		"club",
+		9,
+		"║9      ║",
+		"║ ♣ ♣ ♣ ║",
+		"║ ♣ ♣ ♣ ║",
+		"║ ♣ ♣ ♣ ║",
+		"║      9║"
+		)
+	deck << c9
+	c10 = Card.new(
+		"club",
+		10,
+		"║10     ║",
+		"║♣ ♣ ♣ ♣║",
+		"║ ♣   ♣ ║",
+		"║♣ ♣ ♣ ♣║",
+		"║     10║"
+		)
+	deck << c10
+	cJ = Card.new(
+		"club",
+		11,
+		"║J      ║",
+		"║ A  ♣  ║",
+		"║   C   ║",
+	    "║  ♣  K ║",
+		"║      J║"
+		)
+	deck << cJ
+	cQ = Card.new(
+		"club",
+		12,
+		"║Q      ║",
+		"║ °\\♣/° ║",
+	    "║  |°|  ║",
+	    "║ @@@@@ ║",
+		"║      Q║"
+		)
+	deck << cQ
+	cK = Card.new(
+		"club",
+		13,
+		"║K      ║",
+		"║ ♣ ♣ ♣ ║",
+		"║ |VVV| ║",
+	    "║ |___| ║",
+		"║      K║"
+		)
+	deck << cK
+	cA = Card.new(
+		"club",
+		14,
+		"║A♣     ║",
+		"║       ║",
+		"║   ♣   ║",
+	    "║       ║",
+		"║     ♣A║"
+		)
+	deck << cA
+	h6 = Card.new(
+		"heart",
+		6,
+		"║6      ║",
+		"║ ♥   ♥ ║",
+		"║ ♥   ♥ ║",
+		"║ ♥   ♥ ║",
+		"║      6║"
+		)
+	deck << h6
+	h7 = Card.new(
+		"heart",
+		7,
+		"║7      ║",
+		"║ ♥   ♥ ║",
+		"║ ♥ ♥ ♥ ║",
+		"║ ♥   ♥ ║",
+		"║      7║"
+		)
+	deck << h7
+	h8 = Card.new(
+		"heart",
+		8,
+		"║8      ║",
+		"║ ♥ ♥ ♥ ║",
+		"║  ♥ ♥  ║",
+		"║ ♥ ♥ ♥ ║",
+		"║      8║"
+		)
+	deck << h8
+	h9 = Card.new(
+		"heart",
+		9,
+		"║9      ║",
+		"║ ♥ ♥ ♥ ║",
+		"║ ♥ ♥ ♥ ║",
+		"║ ♥ ♥ ♥ ║",
+		"║      9║"
+		)
+	deck << h9
+	h10 = Card.new(
+		"heart",
+		10,
+		"║10     ║",
+		"║♥ ♥ ♥ ♥║",
+		"║ ♥   ♥ ║",
+		"║♥ ♥ ♥ ♥║",
+		"║     10║"
+		)
+	deck << h10
+	hJ = Card.new(
+		"heart",
+		11,
+		"║J      ║",
+		"║ A  ♥  ║",
+		"║   C   ║",
+	    "║  ♥  K ║",
+		"║      J║"
+		)
+	deck << hJ
+	hQ = Card.new(
+		"heart",
+		12,
+		"║Q      ║",
+		"║ °\\♥/° ║",
+	    "║  |°|  ║",
+	    "║ @@@@@ ║",
+		"║      Q║"
+		)
+	deck << hQ
+	hK = Card.new(
+		"heart",
+		13,
+		"║K      ║",
+		"║ ♥ ♥ ♥ ║",
+		"║ |VVV| ║",
+	    "║ |___| ║",
+		"║      K║"
+		)
+	deck << hK
+	hA = Card.new(
+		"heart",
+		14,
+		"║A♥     ║",
+		"║       ║",
+		"║   ♥   ║",
+	    "║       ║",
+		"║     ♥A║"
+		)
+	deck << hA
+	d6 = Card.new(
+		"dimond",
+		6,
+		"║6      ║",
+		"║ ♦   ♦ ║",
+		"║ ♦   ♦ ║",
+		"║ ♦   ♦ ║",
+		"║      6║"
+		)
+	deck << d6
+	d7 = Card.new(
+		"dimond",
+		7,
+		"║7      ║",
+		"║ ♦   ♦ ║",
+		"║ ♦ ♦ ♦ ║",
+		"║ ♦   ♦ ║",
+		"║      7║"
+		)
+	deck << d7
+	d8 = Card.new(
+		"dimond",
+		8,
+		"║8      ║",
+		"║ ♦ ♦ ♦ ║",
+		"║  ♦ ♦  ║",
+		"║ ♦ ♦ ♦ ║",
+		"║      8║"
+		)
+	deck << d8
+	d9 = Card.new(
+		"dimond",
+		9,
+		"║9      ║",
+		"║ ♦ ♦ ♦ ║",
+		"║ ♦ ♦ ♦ ║",
+		"║ ♦ ♦ ♦ ║",
+		"║      9║"
+		)
+	deck << d9
+	d10 = Card.new(
+		"dimond",
+		10,
+		"║10     ║",
+		"║♦ ♦ ♦ ♦║",
+		"║ ♦   ♦ ║",
+		"║♦ ♦ ♦ ♦║",
+		"║     10║"
+		)
+	deck << d10
+	dJ = Card.new(
+		"dimond",
+		11,
+		"║J      ║",
+		"║ A  ♦  ║",
+		"║   C   ║",
+	    "║  ♦  K ║",
+		"║      J║"
+		)
+	deck << dJ
+	dQ = Card.new(
+		"dimond",
+		12,
+		"║Q      ║",
+		"║ °\\♦/° ║",
+	    "║  |°|  ║",
+	    "║ @@@@@ ║",
+		"║      Q║"
+		)
+	deck << dQ
+	dK = Card.new(
+		"dimond",
+		13,
+		"║K      ║",
+		"║ ♦ ♦ ♦ ║",
+		"║ |VVV| ║",
+	    "║ |___| ║",
+		"║      K║"
+		)
+	deck << dK
+	dA = Card.new(
+		"dimond",
+		14,
+		"║A♦     ║",
+		"║       ║",
+		"║   ♦   ║",
+	    "║       ║",
+		"║     ♦A║"
+		)
+	deck << dA
+	return deck
+end
 
-start = Game.new(deck)
+start = Game.new()
+card=gets.chomp.to_i
+start.playermove(card)
 # deck = shuffle(deck)
 
 # puts "#{deck[0].line1} #{deck[1].line1} #{deck[2].line1} #{deck[3].line1}"
@@ -782,31 +858,32 @@ start = Game.new(deck)
 	# puts "#{cA.line5} #{dA.line5} #{sA.line5} #{hA.line5}"
 	# puts "#{cA.line6} #{dA.line6} #{sA.line6} #{hA.line6}"
 	# puts "#{cA.line7} #{dA.line7} #{sA.line7} #{hA.line7}"
-
-#}
-# puts "╔═══════╗"
-# puts "║10     ║"
-# puts "║       ║"
-# puts "║   ♠   ║"
-# puts "║       ║"
-# puts "║     10║"
-# puts "╚═══════╝"
-
-# puts "╔═══════╗"
-# puts "║10     ║"
-# puts "║♠ ♠ ♠ ♠║"
-# puts "║ ♠   ♠ ║"
-# puts "║♠ ♠ ♠ ♠║"
-# puts "║     10║"
-# puts "╚═══════╝"
-
-# puts "╔═══════╗"
-# puts "║ ##### ║"
-# puts "║ #   # ║"
-# puts "║ #   # ║"
-# puts "║ #   # ║"
-# puts "║ ##### ║"
-# puts "╚═══════╝"
-
-# puts "╔═══════╗\n║ Hello ║\n╚═══════╝"
-# puts "♠ ♣ ♦ ♥"
+# def setup
+# 		space = "  "
+# 		puts "	#{@ohand[0].b_line1}  #{@ohand[1].b_line1}  #{@ohand[2].b_line1}  #{@ohand[3].b_line1}  #{@ohand[4].b_line1}  #{@ohand[5].b_line1}"
+# 		puts "  #{@ohand[0].b_line2}  #{@ohand[1].b_line2}  #{@ohand[2].b_line2}  #{@ohand[3].b_line2}  #{@ohand[4].b_line2}  #{@ohand[5].b_line2}"
+# 		puts "  #{@ohand[0].b_line3}  #{@ohand[1].b_line3}  #{@ohand[2].b_line3}  #{@ohand[3].b_line3}  #{@ohand[4].b_line3}  #{@ohand[5].b_line3}"
+# 		puts "  #{@ohand[0].b_line4}  #{@ohand[1].b_line4}  #{@ohand[2].b_line4}  #{@ohand[3].b_line4}  #{@ohand[4].b_line4}  #{@ohand[5].b_line4}"
+# 		puts "  #{@ohand[0].b_line5}  #{@ohand[1].b_line5}  #{@ohand[2].b_line5}  #{@ohand[3].b_line5}  #{@ohand[4].b_line5}  #{@ohand[5].b_line5}"
+# 		puts "  #{@ohand[0].b_line6}  #{@ohand[1].b_line6}  #{@ohand[2].b_line6}  #{@ohand[3].b_line6}  #{@ohand[4].b_line6}  #{@ohand[5].b_line6}"
+# 		puts "  #{@ohand[0].b_line7}  #{@ohand[1].b_line7}  #{@ohand[2].b_line7}  #{@ohand[3].b_line7}  #{@ohand[4].b_line7}  #{@ohand[5].b_line7}"
+# 		puts " "
+# 		puts " 											               	                        T R U M P"
+# 		puts "                                             #{@deck[0].b_line1}  #{@deck[-1].line1}"
+# 		puts "                                             #{@deck[0].b_line2}  #{@deck[-1].line2}"
+# 		puts "                                             #{@deck[0].b_line3}  #{@deck[-1].line3}"
+# 		puts "                                             #{@deck[0].b_line4}  #{@deck[-1].line4}"
+# 		puts "                                             #{@deck[0].b_line5}  #{@deck[-1].line5}"
+# 		puts "                                             #{@deck[0].b_line6}  #{@deck[-1].line6}"
+# 		puts "                                             #{@deck[0].b_line7}  #{@deck[-1].line7}"
+# 		puts " "
+# 		puts " "
+# 		puts "  #{@phand[0].line1}  #{@phand[1].line1}  #{@phand[2].line1}  #{@phand[3].line1}  #{@phand[4].line1}  #{@phand[5].line1}"
+# 		puts "  #{@phand[0].line2}  #{@phand[1].line2}  #{@phand[2].line2}  #{@phand[3].line2}  #{@phand[4].line2}  #{@phand[5].line2}"
+# 		puts "  #{@phand[0].line3}  #{@phand[1].line3}  #{@phand[2].line3}  #{@phand[3].line3}  #{@phand[4].line3}  #{@phand[5].line3}"
+# 		puts "  #{@phand[0].line4}  #{@phand[1].line4}  #{@phand[2].line4}  #{@phand[3].line4}  #{@phand[4].line4}  #{@phand[5].line4}"
+# 		puts "  #{@phand[0].line5}  #{@phand[1].line5}  #{@phand[2].line5}  #{@phand[3].line5}  #{@phand[4].line5}  #{@phand[5].line5}"
+# 		puts "  #{@phand[0].line6}  #{@phand[1].line6}  #{@phand[2].line6}  #{@phand[3].line6}  #{@phand[4].line6}  #{@phand[5].line6}"
+# 		puts "  #{@phand[0].line7}  #{@phand[1].line7}  #{@phand[2].line7}  #{@phand[3].line7}  #{@phand[4].line7}  #{@phand[5].line7}"
+# 		turn()
+# 	end
