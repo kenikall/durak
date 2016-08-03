@@ -63,16 +63,25 @@ class Game
 	end
 
 	def setup
-		#space = "  "
-		puts "\n"
-		puts "  #{@ohand[0].b_line1}  #{@ohand[1].b_line1}  #{@ohand[2].b_line1}  #{@ohand[3].b_line1}  #{@ohand[4].b_line1}  #{@ohand[5].b_line1}"
-		puts "  #{@ohand[0].b_line2}  #{@ohand[1].b_line2}  #{@ohand[2].b_line2}  #{@ohand[3].b_line2}  #{@ohand[4].b_line2}  #{@ohand[5].b_line2}"
-		puts "  #{@ohand[0].b_line3}  #{@ohand[1].b_line3}  #{@ohand[2].b_line3}  #{@ohand[3].b_line3}  #{@ohand[4].b_line3}  #{@ohand[5].b_line3}"
-		puts "  #{@ohand[0].b_line4}  #{@ohand[1].b_line4}  #{@ohand[2].b_line4}  #{@ohand[3].b_line4}  #{@ohand[4].b_line4}  #{@ohand[5].b_line4}"
-		puts "  #{@ohand[0].b_line5}  #{@ohand[1].b_line5}  #{@ohand[2].b_line5}  #{@ohand[3].b_line5}  #{@ohand[4].b_line5}  #{@ohand[5].b_line5}"
-		puts "  #{@ohand[0].b_line6}  #{@ohand[1].b_line6}  #{@ohand[2].b_line6}  #{@ohand[3].b_line6}  #{@ohand[4].b_line6}  #{@ohand[5].b_line6}"
-		puts "  #{@ohand[0].b_line7}  #{@ohand[1].b_line7}  #{@ohand[2].b_line7}  #{@ohand[3].b_line7}  #{@ohand[4].b_line7}  #{@ohand[5].b_line7}"
+		oline1 = oline2 = oline3 = oline4 = oline5 = oline6 = oline7 = ""
+		pline1 = pline2 = pline3 = pline4 = pline5 = pline6 = pline7 = ""
 		
+		@ohand.count.times{|x| oline1 += "  #{@ohand[x].b_line1}"}
+		@ohand.count.times{|x| oline2 += "  #{@ohand[x].b_line2}"}
+		@ohand.count.times{|x| oline3 += "  #{@ohand[x].b_line3}"}
+		@ohand.count.times{|x| oline4 += "  #{@ohand[x].b_line4}"}
+		@ohand.count.times{|x| oline5 += "  #{@ohand[x].b_line5}"}
+		@ohand.count.times{|x| oline6 += "  #{@ohand[x].b_line6}"}
+		@ohand.count.times{|x| oline7 += "  #{@ohand[x].b_line7}"}
+		
+		puts "#{oline1}"
+		puts "#{oline2}"
+		puts "#{oline3}"
+		puts "#{oline4}"
+		puts "#{oline5}"
+		puts "#{oline6}"
+		puts "#{oline7}"
+
 		if @attack == nil
 			puts "\n"
 			puts "                                                        T R U M P"
@@ -99,7 +108,7 @@ class Game
 			puts "\n"
 		else
 			puts "\n"
-			puts "                 #{@attack.line1}                                     T R U M P"
+			puts "                 #{@attack.line1}                              T R U M P"
 			puts "                 #{@attack.line2}                   #{@deck[0].b_line1}  #{@deck[-1].line1}"
 			puts "                 #{@attack.line3}                   #{@deck[0].b_line2}  #{@deck[-1].line2}"
 			puts "                 #{@defend.line1}                   #{@deck[0].b_line3}  #{@deck[-1].line3}"
@@ -111,13 +120,21 @@ class Game
 			puts "                 #{@defend.line7}"
 		end
 
-		puts "  #{@phand[0].line1}  #{@phand[1].line1}  #{@phand[2].line1}  #{@phand[3].line1}  #{@phand[4].line1}  #{@phand[5].line1}"
-		puts "  #{@phand[0].line2}  #{@phand[1].line2}  #{@phand[2].line2}  #{@phand[3].line2}  #{@phand[4].line2}  #{@phand[5].line2}"
-		puts "  #{@phand[0].line3}  #{@phand[1].line3}  #{@phand[2].line3}  #{@phand[3].line3}  #{@phand[4].line3}  #{@phand[5].line3}"
-		puts "  #{@phand[0].line4}  #{@phand[1].line4}  #{@phand[2].line4}  #{@phand[3].line4}  #{@phand[4].line4}  #{@phand[5].line4}"
-		puts "  #{@phand[0].line5}  #{@phand[1].line5}  #{@phand[2].line5}  #{@phand[3].line5}  #{@phand[4].line5}  #{@phand[5].line5}"
-		puts "  #{@phand[0].line6}  #{@phand[1].line6}  #{@phand[2].line6}  #{@phand[3].line6}  #{@phand[4].line6}  #{@phand[5].line6}"
-		puts "  #{@phand[0].line7}  #{@phand[1].line7}  #{@phand[2].line7}  #{@phand[3].line7}  #{@phand[4].line7}  #{@phand[5].line7}"
+		@phand.count.times{|x| pline1 += "  #{@phand[x].line1}"}
+		@phand.count.times{|x| pline2 += "  #{@phand[x].line2}"}
+		@phand.count.times{|x| pline3 += "  #{@phand[x].line3}"}
+		@phand.count.times{|x| pline4 += "  #{@phand[x].line4}"}
+		@phand.count.times{|x| pline5 += "  #{@phand[x].line5}"}
+		@phand.count.times{|x| pline6 += "  #{@phand[x].line6}"}
+		@phand.count.times{|x| pline7 += "  #{@phand[x].line7}"}
+		
+		puts "#{pline1}"
+		puts "#{pline2}"
+		puts "#{pline3}"
+		puts "#{pline4}"
+		puts "#{pline5}"
+		puts "#{pline6}"
+		puts "#{pline7}"
 		turn()
 	end
 
@@ -148,6 +165,7 @@ class Game
 				puts " "
 				puts "Opponent is attacker. Opponent plays #{"opponent's card"}"
 				@turn = "opponent"
+				opponentmove()
 			end
 			@first = false
 		end
@@ -155,8 +173,12 @@ class Game
 
 	def playermove(card)
 		if @turn == "player"
-			@attack = @phand[card-1] 
-			#@phand.delete_at(card-1)
+			card -= 1
+			@attack = @phand[card] 
+			@phand.delete_at(card)
+		else
+			@defend = @phand[card]
+			@phand.delete_at(card)
 		end
 		setup()
 		opponentmove()
@@ -170,6 +192,7 @@ class Game
 				if x.suit == @attack.suit
 					if x.value > @attack.value
 						@defend = x
+						card = x
 					end
 				end}
 			if @defend == nil
@@ -180,11 +203,26 @@ class Game
 					end
 				end}
 			end
+
 			if @defend == nil
 				puts "The opponent takes."
+			else 
+			 	@ohand.delete(@defend)
 			end
+		else
+			num = 20
+			@ohand.each{|x| 
+				if x.suit != @trump.suit
+					if x.value < num
+						@attack = x
+					end
+				end}
+			@ohand.delete(@attack)
 		end
 		setup()
+		puts "Opponent is attacking, chose your defense."
+		card=gets.chomp.to_i
+		playermove(card)
 	end
 end
 
