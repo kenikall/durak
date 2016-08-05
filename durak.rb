@@ -46,10 +46,14 @@ class Game
 	def shuffle #randomly order deck array
 		@deck.length.times{|x| #get location of cards in order
 			location = rand(@deck.length) #get place of random card
-			temp = @deck[rand(@deck.length)] #hold random card
+			temp = @deck[location] #hold random card
 			@deck[location] = @deck[x] #put random card in current location
 			@deck[x] = temp #put card from current location in random location
 		}
+		
+
+
+
 
 		deal() #fill player and opponent arrays
 	end
@@ -82,63 +86,11 @@ class Game
 				spade_ary << x #put all spades into spade array
 			end}
 
-		@phand.each{|x| p x.name}
-		p "Suits"
-		club_ary.sort_by!{|x|x.value}
-		club_ary.each{|x| p x.name}
-		diamond_ary.sort_by!{|x|x.value}
-		diamond_ary.each{|x|  p x.name}
-		heart_ary.sort_by!{|x| x.value}
-		heart_ary.each{|x| p x.name}
-		spade_ary.sort_by!{|x|x.value}
-		spade_ary.each{|x| p x.name}
+		club_ary = club_ary.sort_by{|x| x.value}
+		diamond_ary = diamond_ary.sort_by{|x| x.value}
+		heart_ary = heart_ary.sort_by{|x| x.value}
+		spade_ary = spade_ary.sort_by{|x| x.value}
 		
-		# sorting = false #sort suit arrays
-		# until sorting
-		# club_ary.count.times{|x|
-		# 	sorting = true
-		# 	p club_ary 
-		# 	if (club_ary[x] != nil && club_ary[x+1] != nil) #check for content
-		# 		if club_ary[x].value < club_ary[x+1].value #check if the value of something earlier in the array is smaller that the thing next to it
-		# 			club_ary[x], club_ary[x+1] = club_ary[x+1], club_ary[x] #if so switch
-		# 			sorting = false #if any switches were made run the sort again
-		# 		end
-		# 	end}
-		# end
-		# sorting = false #sort suit arrays
-		# until sorting
-		# diamond_ary.count.times{|x|
-		# 	sorting = true 
-		# 	if (diamond_ary[x] != nil && diamond_ary[x+1] != nil) #check for content
-		# 		if diamond_ary[x].value < diamond_ary[x+1].value #check if the value of something earlier in the array is smaller that the thing next to it
-		# 			diamond_ary[x], diamond_ary[x+1] = diamond_ary[x+1], diamond_ary[x] #if so switch
-		# 			sorting = false #if any switches were made run the sort again
-		# 		end
-		# 	end}
-		# end
-		# sorting = false #sort suit arrays
-		# until sorting
-		# heart_ary.count.times{|x|
-		# 	sorting = true 
-		# 	p heart_ary
-		# 	if (heart_ary[x] != nil && heart_ary[x+1] != nil) #check for content
-		# 		if heart_ary[x].value < heart_ary[x+1].value #check if the value of something earlier in the array is smaller that the thing next to it
-		# 			heart_ary[x], heart_ary[x+1] = heart_ary[x+1], heart_ary[x] #if so switch
-		# 			sorting = false #if any switches were made run the sort again
-		# 		end
-		# 	end}
-		# end
-		# sorting = false #sort suit arrays
-		# until sorting
-		# spade_ary.count.times{|x|
-		# 	sorting = true 
-		# 	if (spade_ary[x] != nil && spade_ary[x+1] != nil) #check for content
-		# 		if spade_ary[x].value < spade_ary[x+1].value #check if the value of something earlier in the array is smaller that the thing next to it
-		# 			spade_ary[x], spade_ary[x+1] = spade_ary[x+1], spade_ary[x] #if so switch
-		# 			sorting = false #if any switches were made run the sort again
-		# 		end
-		# 	end}
-		# end
 		if @trump.suit == "club" #if #trump is club put clubs first
 			club_ary.each{|x| ordered << x}
 			diamond_ary.each{|x| ordered << x}
@@ -159,7 +111,9 @@ class Game
 			heart_ary.each{|x| ordered << x}
 			diamond_ary.each{|x| ordered << x}
 			club_ary.each{|x| ordered << x}
-			end
+		end
+
+		@phand = ordered
 	end
 
 	def setup
@@ -271,12 +225,12 @@ class Game
 		end
 	end
 
-	def playermove()
-		#playable() #identify playable cards
-		setup() #show game table with playable cards highlighted
+	def playermove
+		playable() #identify playable cards
+		#setup() #show game table with playable cards highlighted
 		cardid = "" #empty sring to identify cards for the user
 		@phand.count.times{|x|cardid  += "      #{x}"} #put numbers under player cards
-
+		card=gets.chomp.to_i
 		if @turn == "player"
 			puts "Player is attacker. Which card would you like to play?"
 			card = gets.chomp
@@ -290,6 +244,15 @@ class Game
 		end
 		setup()
 		opponentmove()
+	end
+
+	def playable
+		# @phand.each{|x|
+		# 	if x.suit == @trump.suit || (x.suit == @attack.suit && x.value>@attack.value) || x.value == @attack.value || x.value == @defend.value
+		# 		#x.canplay = true
+		# 	else
+		# 		#x.canplay = false
+		# 	end}
 	end
 
 	def opponentmove
@@ -329,488 +292,489 @@ class Game
 		end
 		setup()
 		puts "Opponent is attacking, chose your defense."
-		card=gets.chomp.to_i
-		playermove(card)
+		playermove()
+	end
+
+	def create_deck
+		deck = []
+		s6 = Card.new(
+			"spade",
+			6,
+			"six of spades",
+			"║6      ║",
+			"║ ♠   ♠ ║",
+			"║ ♠   ♠ ║",
+			"║ ♠   ♠ ║",
+			"║      6║"
+			)
+		deck << s6
+		s7 = Card.new(
+			"spade",
+			7,
+			"seven of spades",
+			"║7      ║",
+			"║ ♠   ♠ ║",
+			"║ ♠ ♠ ♠ ║",
+			"║ ♠   ♠ ║",
+			"║      7║"
+			)
+		deck << s7
+		s8 = Card.new(
+			"spade",
+			8,
+			"eight of spades",
+			"║8      ║",
+			"║ ♠ ♠ ♠ ║",
+			"║  ♠ ♠  ║",
+			"║ ♠ ♠ ♠ ║",
+			"║      8║"
+			)
+		deck << s8
+		s9 = Card.new(
+			"spade",
+			9,
+			"nine of spades",
+			"║9      ║",
+			"║ ♠ ♠ ♠ ║",
+			"║ ♠ ♠ ♠ ║",
+			"║ ♠ ♠ ♠ ║",
+			"║      9║"
+			)
+		deck << s9
+		s10 = Card.new(
+			"spade",
+			10,
+			"ten of spades",
+			"║10     ║",
+			"║♠ ♠ ♠ ♠║",
+			"║ ♠   ♠ ║",
+			"║♠ ♠ ♠ ♠║",
+			"║     10║"
+			)
+		deck << s10
+		sJ = Card.new(
+			"spade",
+			"jack of spades",
+			11,
+			"║J      ║",
+			"║ A  ♠  ║",
+			"║   C   ║",
+		    "║  ♠  K ║",
+			"║      J║"
+			)
+		deck << sJ
+		sQ = Card.new(
+			"spade",
+			12,
+			"queen of spades",
+			"║Q      ║",
+			"║ °\\♠/° ║",
+		    "║  |°|  ║",
+		    "║ @@@@@ ║",
+			"║      Q║"
+			)
+		deck << sQ
+		sK = Card.new(
+			"spade",
+			13,
+			"king of spades",
+			"║K      ║",
+			"║ ♠ ♠ ♠ ║",
+			"║ |VVV| ║",
+		    "║ |___| ║",
+			"║      K║"
+			)
+		deck << sK
+		sA = Card.new(
+			"spade",
+			14,
+			"ace of spades",
+			"║A♠     ║",
+			"║       ║",
+			"║   ♠   ║",
+		    "║       ║",
+			"║     ♠A║"
+			)
+		deck << sA
+		c6 = Card.new(
+			"club",
+			6,
+			"six of clubs",
+			"║6      ║",
+			"║ ♣   ♣ ║",
+			"║ ♣   ♣ ║",
+			"║ ♣   ♣ ║",
+			"║      6║"
+			)
+		deck << c6
+		c7 = Card.new(
+			"club",
+			7,
+			"seven of clubs",
+			"║7      ║",
+			"║ ♣   ♣ ║",
+			"║ ♣ ♣ ♣ ║",
+			"║ ♣   ♣ ║",
+			"║      7║"
+			)
+		deck << c7
+		c8 = Card.new(
+			"club",
+			8,
+			"eight of clubs",
+			"║8      ║",
+			"║ ♣ ♣ ♣ ║",
+			"║  ♣ ♣  ║",
+			"║ ♣ ♣ ♣ ║",
+			"║      8║"
+			)
+		deck << c8
+		c9 = Card.new(
+			"club",
+			9,
+			"nine of clubs",
+			"║9      ║",
+			"║ ♣ ♣ ♣ ║",
+			"║ ♣ ♣ ♣ ║",
+			"║ ♣ ♣ ♣ ║",
+			"║      9║"
+			)
+		deck << c9
+		c10 = Card.new(
+			"club",
+			10,
+			"ten of clubs",
+			"║10     ║",
+			"║♣ ♣ ♣ ♣║",
+			"║ ♣   ♣ ║",
+			"║♣ ♣ ♣ ♣║",
+			"║     10║"
+			)
+		deck << c10
+		cJ = Card.new(
+			"club",
+			11,
+			"jack of clubs",
+			"║J      ║",
+			"║ A  ♣  ║",
+			"║   C   ║",
+		    "║  ♣  K ║",
+			"║      J║"
+			)
+		deck << cJ
+		cQ = Card.new(
+			"club",
+			12,
+			"queen of clubs",
+			"║Q      ║",
+			"║ °\\♣/° ║",
+		    "║  |°|  ║",
+		    "║ @@@@@ ║",
+			"║      Q║"
+			)
+		deck << cQ
+		cK = Card.new(
+			"club",
+			13,
+			"king of clubs",
+			"║K      ║",
+			"║ ♣ ♣ ♣ ║",
+			"║ |VVV| ║",
+		    "║ |___| ║",
+			"║      K║"
+			)
+		deck << cK
+		cA = Card.new(
+			"club",
+			14,
+			"ace of clubs",
+			"║A♣     ║",
+			"║       ║",
+			"║   ♣   ║",
+		    "║       ║",
+			"║     ♣A║"
+			)
+		deck << cA
+		h6 = Card.new(
+			"heart",
+			6,
+			"six of hearts",
+			"║6      ║",
+			"║ ♥   ♥ ║",
+			"║ ♥   ♥ ║",
+			"║ ♥   ♥ ║",
+			"║      6║"
+			)
+		deck << h6
+		h7 = Card.new(
+			"heart",
+			7,
+			"seven of hearts",
+			"║7      ║",
+			"║ ♥   ♥ ║",
+			"║ ♥ ♥ ♥ ║",
+			"║ ♥   ♥ ║",
+			"║      7║"
+			)
+		deck << h7
+		h8 = Card.new(
+			"heart",
+			8,
+			"eight of hearts",
+			"║8      ║",
+			"║ ♥ ♥ ♥ ║",
+			"║  ♥ ♥  ║",
+			"║ ♥ ♥ ♥ ║",
+			"║      8║"
+			)
+		deck << h8
+		h9 = Card.new(
+			"heart",
+			9,
+			"nine of hearts",
+			"║9      ║",
+			"║ ♥ ♥ ♥ ║",
+			"║ ♥ ♥ ♥ ║",
+			"║ ♥ ♥ ♥ ║",
+			"║      9║"
+			)
+		deck << h9
+		h10 = Card.new(
+			"heart",
+			10,
+			"ten of hearts",
+			"║10     ║",
+			"║♥ ♥ ♥ ♥║",
+			"║ ♥   ♥ ║",
+			"║♥ ♥ ♥ ♥║",
+			"║     10║"
+			)
+		deck << h10
+		hJ = Card.new(
+			"heart",
+			11,
+			"jack of hearts",
+			"║J      ║",
+			"║ A  ♥  ║",
+			"║   C   ║",
+		    "║  ♥  K ║",
+			"║      J║"
+			)
+		deck << hJ
+		hQ = Card.new(
+			"heart",
+			12,
+			"queen of hearts",
+			"║Q      ║",
+			"║ °\\♥/° ║",
+		    "║  |°|  ║",
+		    "║ @@@@@ ║",
+			"║      Q║"
+			)
+		deck << hQ
+		hK = Card.new(
+			"heart",
+			13,
+			"king of hearts",
+			"║K      ║",
+			"║ ♥ ♥ ♥ ║",
+			"║ |VVV| ║",
+		    "║ |___| ║",
+			"║      K║"
+			)
+		deck << hK
+		hA = Card.new(
+			"heart",
+			14,
+			"ace of hearts",
+			"║A♥     ║",
+			"║       ║",
+			"║   ♥   ║",
+		    "║       ║",
+			"║     ♥A║"
+			)
+		deck << hA
+		d6 = Card.new(
+			"diamond",
+			6,
+			"six of diamonds",
+			"║6      ║",
+			"║ ♦   ♦ ║",
+			"║ ♦   ♦ ║",
+			"║ ♦   ♦ ║",
+			"║      6║"
+			)
+		deck << d6
+		d7 = Card.new(
+			"diamond",
+			7,
+			"seven of diamonds",
+			"║7      ║",
+			"║ ♦   ♦ ║",
+			"║ ♦ ♦ ♦ ║",
+			"║ ♦   ♦ ║",
+			"║      7║"
+			)
+		deck << d7
+		d8 = Card.new(
+			"diamond",
+			8,
+			"eight of diamonds",
+			"║8      ║",
+			"║ ♦ ♦ ♦ ║",
+			"║  ♦ ♦  ║",
+			"║ ♦ ♦ ♦ ║",
+			"║      8║"
+			)
+		deck << d8
+		d9 = Card.new(
+			"diamond",
+			9,
+			"nine of diamonds",
+			"║9      ║",
+			"║ ♦ ♦ ♦ ║",
+			"║ ♦ ♦ ♦ ║",
+			"║ ♦ ♦ ♦ ║",
+			"║      9║"
+			)
+		deck << d9
+		d10 = Card.new(
+			"diamond",
+			10,
+			"ten of diamonds",
+			"║10     ║",
+			"║♦ ♦ ♦ ♦║",
+			"║ ♦   ♦ ║",
+			"║♦ ♦ ♦ ♦║",
+			"║     10║"
+			)
+		deck << d10
+		dJ = Card.new(
+			"diamond",
+			11,
+			"jack of diamonds",
+			"║J      ║",
+			"║ A  ♦  ║",
+			"║   C   ║",
+		    "║  ♦  K ║",
+			"║      J║"
+			)
+		deck << dJ
+		dQ = Card.new(
+			"diamond",
+			12,
+			"queen of diamonds",
+			"║Q      ║",
+			"║ °\\♦/° ║",
+		    "║  |°|  ║",
+		    "║ @@@@@ ║",
+			"║      Q║"
+			)
+		deck << dQ
+		dK = Card.new(
+			"diamond",
+			13,
+			"king of diamonds",
+			"║K      ║",
+			"║ ♦ ♦ ♦ ║",
+			"║ |VVV| ║",
+		    "║ |___| ║",
+			"║      K║"
+			)
+		deck << dK
+		dA = Card.new(
+			"diamond",
+			14,
+			"ace of diamonds",
+			"║A♦     ║",
+			"║       ║",
+			"║   ♦   ║",
+		    "║       ║",
+			"║     ♦A║"
+			)
+		deck << dA
+		return deck
 	end
 end
 
-def create_deck
-	deck = []
-	s6 = Card.new(
-		"spade",
-		6,
-		"six of spades",
-		"║6      ║",
-		"║ ♠   ♠ ║",
-		"║ ♠   ♠ ║",
-		"║ ♠   ♠ ║",
-		"║      6║"
-		)
-	deck << s6
-	s7 = Card.new(
-		"spade",
-		7,
-		"seven of spades",
-		"║7      ║",
-		"║ ♠   ♠ ║",
-		"║ ♠ ♠ ♠ ║",
-		"║ ♠   ♠ ║",
-		"║      7║"
-		)
-	deck << s7
-	s8 = Card.new(
-		"spade",
-		8,
-		"eight of spades",
-		"║8      ║",
-		"║ ♠ ♠ ♠ ║",
-		"║  ♠ ♠  ║",
-		"║ ♠ ♠ ♠ ║",
-		"║      8║"
-		)
-	deck << s8
-	s9 = Card.new(
-		"spade",
-		9,
-		"nine of spades",
-		"║9      ║",
-		"║ ♠ ♠ ♠ ║",
-		"║ ♠ ♠ ♠ ║",
-		"║ ♠ ♠ ♠ ║",
-		"║      9║"
-		)
-	deck << s9
-	s10 = Card.new(
-		"spade",
-		10,
-		"ten of spades",
-		"║10     ║",
-		"║♠ ♠ ♠ ♠║",
-		"║ ♠   ♠ ║",
-		"║♠ ♠ ♠ ♠║",
-		"║     10║"
-		)
-	deck << s10
-	sJ = Card.new(
-		"spade",
-		"jack of spades",
-		11,
-		"║J      ║",
-		"║ A  ♠  ║",
-		"║   C   ║",
-	    "║  ♠  K ║",
-		"║      J║"
-		)
-	deck << sJ
-	sQ = Card.new(
-		"spade",
-		12,
-		"queen of spades",
-		"║Q      ║",
-		"║ °\\♠/° ║",
-	    "║  |°|  ║",
-	    "║ @@@@@ ║",
-		"║      Q║"
-		)
-	deck << sQ
-	sK = Card.new(
-		"spade",
-		13,
-		"king of spades",
-		"║K      ║",
-		"║ ♠ ♠ ♠ ║",
-		"║ |VVV| ║",
-	    "║ |___| ║",
-		"║      K║"
-		)
-	deck << sK
-	sA = Card.new(
-		"spade",
-		14,
-		"ace of spades",
-		"║A♠     ║",
-		"║       ║",
-		"║   ♠   ║",
-	    "║       ║",
-		"║     ♠A║"
-		)
-	deck << sA
-	c6 = Card.new(
-		"club",
-		6,
-		"six of clubs",
-		"║6      ║",
-		"║ ♣   ♣ ║",
-		"║ ♣   ♣ ║",
-		"║ ♣   ♣ ║",
-		"║      6║"
-		)
-	deck << c6
-	c7 = Card.new(
-		"club",
-		7,
-		"seven of clubs",
-		"║7      ║",
-		"║ ♣   ♣ ║",
-		"║ ♣ ♣ ♣ ║",
-		"║ ♣   ♣ ║",
-		"║      7║"
-		)
-	deck << c7
-	c8 = Card.new(
-		"club",
-		8,
-		"eight of clubs",
-		"║8      ║",
-		"║ ♣ ♣ ♣ ║",
-		"║  ♣ ♣  ║",
-		"║ ♣ ♣ ♣ ║",
-		"║      8║"
-		)
-	deck << c8
-	c9 = Card.new(
-		"club",
-		9,
-		"nine of clubs",
-		"║9      ║",
-		"║ ♣ ♣ ♣ ║",
-		"║ ♣ ♣ ♣ ║",
-		"║ ♣ ♣ ♣ ║",
-		"║      9║"
-		)
-	deck << c9
-	c10 = Card.new(
-		"club",
-		10,
-		"ten of clubs",
-		"║10     ║",
-		"║♣ ♣ ♣ ♣║",
-		"║ ♣   ♣ ║",
-		"║♣ ♣ ♣ ♣║",
-		"║     10║"
-		)
-	deck << c10
-	cJ = Card.new(
-		"club",
-		11,
-		"jack of clubs",
-		"║J      ║",
-		"║ A  ♣  ║",
-		"║   C   ║",
-	    "║  ♣  K ║",
-		"║      J║"
-		)
-	deck << cJ
-	cQ = Card.new(
-		"club",
-		12,
-		"queen of clubs",
-		"║Q      ║",
-		"║ °\\♣/° ║",
-	    "║  |°|  ║",
-	    "║ @@@@@ ║",
-		"║      Q║"
-		)
-	deck << cQ
-	cK = Card.new(
-		"club",
-		13,
-		"king of clubs",
-		"║K      ║",
-		"║ ♣ ♣ ♣ ║",
-		"║ |VVV| ║",
-	    "║ |___| ║",
-		"║      K║"
-		)
-	deck << cK
-	cA = Card.new(
-		"club",
-		14,
-		"ace of clubs",
-		"║A♣     ║",
-		"║       ║",
-		"║   ♣   ║",
-	    "║       ║",
-		"║     ♣A║"
-		)
-	deck << cA
-	h6 = Card.new(
-		"heart",
-		6,
-		"six of hearts",
-		"║6      ║",
-		"║ ♥   ♥ ║",
-		"║ ♥   ♥ ║",
-		"║ ♥   ♥ ║",
-		"║      6║"
-		)
-	deck << h6
-	h7 = Card.new(
-		"heart",
-		7,
-		"seven of hearts",
-		"║7      ║",
-		"║ ♥   ♥ ║",
-		"║ ♥ ♥ ♥ ║",
-		"║ ♥   ♥ ║",
-		"║      7║"
-		)
-	deck << h7
-	h8 = Card.new(
-		"heart",
-		8,
-		"eight of hearts",
-		"║8      ║",
-		"║ ♥ ♥ ♥ ║",
-		"║  ♥ ♥  ║",
-		"║ ♥ ♥ ♥ ║",
-		"║      8║"
-		)
-	deck << h8
-	h9 = Card.new(
-		"heart",
-		9,
-		"nine of hearts",
-		"║9      ║",
-		"║ ♥ ♥ ♥ ║",
-		"║ ♥ ♥ ♥ ║",
-		"║ ♥ ♥ ♥ ║",
-		"║      9║"
-		)
-	deck << h9
-	h10 = Card.new(
-		"heart",
-		10,
-		"ten of hearts",
-		"║10     ║",
-		"║♥ ♥ ♥ ♥║",
-		"║ ♥   ♥ ║",
-		"║♥ ♥ ♥ ♥║",
-		"║     10║"
-		)
-	deck << h10
-	hJ = Card.new(
-		"heart",
-		11,
-		"jack of hearts",
-		"║J      ║",
-		"║ A  ♥  ║",
-		"║   C   ║",
-	    "║  ♥  K ║",
-		"║      J║"
-		)
-	deck << hJ
-	hQ = Card.new(
-		"heart",
-		12,
-		"queen of hearts",
-		"║Q      ║",
-		"║ °\\♥/° ║",
-	    "║  |°|  ║",
-	    "║ @@@@@ ║",
-		"║      Q║"
-		)
-	deck << hQ
-	hK = Card.new(
-		"heart",
-		13,
-		"king of hearts",
-		"║K      ║",
-		"║ ♥ ♥ ♥ ║",
-		"║ |VVV| ║",
-	    "║ |___| ║",
-		"║      K║"
-		)
-	deck << hK
-	hA = Card.new(
-		"heart",
-		14,
-		"ace of hearts",
-		"║A♥     ║",
-		"║       ║",
-		"║   ♥   ║",
-	    "║       ║",
-		"║     ♥A║"
-		)
-	deck << hA
-	d6 = Card.new(
-		"diamond",
-		6,
-		"six of diamonds",
-		"║6      ║",
-		"║ ♦   ♦ ║",
-		"║ ♦   ♦ ║",
-		"║ ♦   ♦ ║",
-		"║      6║"
-		)
-	deck << d6
-	d7 = Card.new(
-		"diamond",
-		7,
-		"seven of diamonds",
-		"║7      ║",
-		"║ ♦   ♦ ║",
-		"║ ♦ ♦ ♦ ║",
-		"║ ♦   ♦ ║",
-		"║      7║"
-		)
-	deck << d7
-	d8 = Card.new(
-		"diamond",
-		8,
-		"eight of diamonds",
-		"║8      ║",
-		"║ ♦ ♦ ♦ ║",
-		"║  ♦ ♦  ║",
-		"║ ♦ ♦ ♦ ║",
-		"║      8║"
-		)
-	deck << d8
-	d9 = Card.new(
-		"diamond",
-		9,
-		"nine of diamonds",
-		"║9      ║",
-		"║ ♦ ♦ ♦ ║",
-		"║ ♦ ♦ ♦ ║",
-		"║ ♦ ♦ ♦ ║",
-		"║      9║"
-		)
-	deck << d9
-	d10 = Card.new(
-		"diamond",
-		10,
-		"ten of diamonds",
-		"║10     ║",
-		"║♦ ♦ ♦ ♦║",
-		"║ ♦   ♦ ║",
-		"║♦ ♦ ♦ ♦║",
-		"║     10║"
-		)
-	deck << d10
-	dJ = Card.new(
-		"diamond",
-		11,
-		"jack of diamonds",
-		"║J      ║",
-		"║ A  ♦  ║",
-		"║   C   ║",
-	    "║  ♦  K ║",
-		"║      J║"
-		)
-	deck << dJ
-	dQ = Card.new(
-		"diamond",
-		12,
-		"queen of diamonds",
-		"║Q      ║",
-		"║ °\\♦/° ║",
-	    "║  |°|  ║",
-	    "║ @@@@@ ║",
-		"║      Q║"
-		)
-	deck << dQ
-	dK = Card.new(
-		"diamond",
-		13,
-		"king of diamonds",
-		"║K      ║",
-		"║ ♦ ♦ ♦ ║",
-		"║ |VVV| ║",
-	    "║ |___| ║",
-		"║      K║"
-		)
-	deck << dK
-	dA = Card.new(
-		"diamond",
-		14,
-		"ace of diamonds",
-		"║A♦     ║",
-		"║       ║",
-		"║   ♦   ║",
-	    "║       ║",
-		"║     ♦A║"
-		)
-	deck << dA
-	return deck
-end
+
 
 start = Game.new()
-card=gets.chomp.to_i
-start.playermove(card)
+# card=gets.chomp.to_i
+# start.playermove(card)
 # deck = shuffle(deck)
 
-# puts "#{deck[0].line1} #{deck[1].line1} #{deck[2].line1} #{deck[3].line1}"
-# puts "#{deck[0].line2} #{deck[1].line2} #{deck[2].line2} #{deck[3].line2}"
-# puts "#{deck[0].line3} #{deck[1].line3} #{deck[2].line3} #{deck[3].line3}"
-# puts "#{deck[0].line4} #{deck[1].line4} #{deck[2].line4} #{deck[3].line4}"
-# puts "#{deck[0].line5} #{deck[1].line5} #{deck[2].line5} #{deck[3].line5}"
-# puts "#{deck[0].line6} #{deck[1].line6} #{deck[2].line6} #{deck[3].line6}"
-# puts "#{deck[0].line7} #{deck[1].line7} #{deck[2].line7} #{deck[3].line7}"
+# puts "#{@deck[0].line1} #{@deck[1].line1} #{@deck[2].line1} #{@deck[3].line1}"
+# puts "#{@deck[0].line2} #{@deck[1].line2} #{@deck[2].line2} #{@deck[3].line2}"
+# puts "#{@deck[0].line3} #{@deck[1].line3} #{@deck[2].line3} #{@deck[3].line3}"
+# puts "#{@deck[0].line4} #{@deck[1].line4} #{@deck[2].line4} #{@deck[3].line4}"
+# puts "#{@deck[0].line5} #{@deck[1].line5} #{@deck[2].line5} #{@deck[3].line5}"
+# puts "#{@deck[0].line6} #{@deck[1].line6} #{@deck[2].line6} #{@deck[3].line6}"
+# puts "#{@deck[0].line7} #{@deck[1].line7} #{@deck[2].line7} #{@deck[3].line7}"
 
-# puts "#{deck[4].line1} #{deck[5].line1} #{deck[6].line1} #{deck[7].line1}"
-# puts "#{deck[4].line2} #{deck[5].line2} #{deck[6].line2} #{deck[7].line2}"
-# puts "#{deck[4].line3} #{deck[5].line3} #{deck[6].line3} #{deck[7].line3}"
-# puts "#{deck[4].line4} #{deck[5].line4} #{deck[6].line4} #{deck[7].line4}"
-# puts "#{deck[4].line5} #{deck[5].line5} #{deck[6].line5} #{deck[7].line5}"
-# puts "#{deck[4].line6} #{deck[5].line6} #{deck[6].line6} #{deck[7].line6}"
-# puts "#{deck[4].line7} #{deck[5].line7} #{deck[6].line7} #{deck[7].line7}"
+# puts "#{@deck[4].line1} #{@deck[5].line1} #{@deck[6].line1} #{@deck[7].line1}"
+# puts "#{@deck[4].line2} #{@deck[5].line2} #{@deck[6].line2} #{@deck[7].line2}"
+# puts "#{@deck[4].line3} #{@deck[5].line3} #{@deck[6].line3} #{@deck[7].line3}"
+# puts "#{@deck[4].line4} #{@deck[5].line4} #{@deck[6].line4} #{@deck[7].line4}"
+# puts "#{@deck[4].line5} #{@deck[5].line5} #{@deck[6].line5} #{@deck[7].line5}"
+# puts "#{@deck[4].line6} #{@deck[5].line6} #{@deck[6].line6} #{@deck[7].line6}"
+# puts "#{@deck[4].line7} #{@deck[5].line7} #{@deck[6].line7} #{@deck[7].line7}"
 
-# puts "#{deck[8].line1} #{deck[9].line1} #{deck[10].line1} #{deck[11].line1}"
-# puts "#{deck[8].line2} #{deck[9].line2} #{deck[10].line2} #{deck[11].line2}"
-# puts "#{deck[8].line3} #{deck[9].line3} #{deck[10].line3} #{deck[11].line3}"
-# puts "#{deck[8].line4} #{deck[9].line4} #{deck[10].line4} #{deck[11].line4}"
-# puts "#{deck[8].line5} #{deck[9].line5} #{deck[10].line5} #{deck[11].line5}"
-# puts "#{deck[8].line6} #{deck[9].line6} #{deck[10].line6} #{deck[11].line6}"
-# puts "#{deck[8].line7} #{deck[9].line7} #{deck[10].line7} #{deck[11].line7}"
+# puts "#{@deck[8].line1} #{@deck[9].line1} #{@deck[10].line1} #{@deck[11].line1}"
+# puts "#{@deck[8].line2} #{@deck[9].line2} #{@deck[10].line2} #{@deck[11].line2}"
+# puts "#{@deck[8].line3} #{@deck[9].line3} #{@deck[10].line3} #{@deck[11].line3}"
+# puts "#{@deck[8].line4} #{@deck[9].line4} #{@deck[10].line4} #{@deck[11].line4}"
+# puts "#{@deck[8].line5} #{@deck[9].line5} #{@deck[10].line5} #{@deck[11].line5}"
+# puts "#{@deck[8].line6} #{@deck[9].line6} #{@deck[10].line6} #{@deck[11].line6}"
+# puts "#{@deck[8].line7} #{@deck[9].line7} #{@deck[10].line7} #{@deck[11].line7}"
 
-# puts "#{deck[12].line1} #{deck[13].line1} #{deck[14].line1} #{deck[15].line1}"
-# puts "#{deck[12].line2} #{deck[13].line2} #{deck[14].line2} #{deck[15].line2}"
-# puts "#{deck[12].line3} #{deck[13].line3} #{deck[14].line3} #{deck[15].line3}"
-# puts "#{deck[12].line4} #{deck[13].line4} #{deck[14].line4} #{deck[15].line4}"
-# puts "#{deck[12].line5} #{deck[13].line5} #{deck[14].line5} #{deck[15].line5}"
-# puts "#{deck[12].line6} #{deck[13].line6} #{deck[14].line6} #{deck[15].line6}"
-# puts "#{deck[12].line7} #{deck[13].line7} #{deck[14].line7} #{deck[15].line7}"
+# puts "#{@deck[12].line1} #{@deck[13].line1} #{@deck[14].line1} #{@deck[15].line1}"
+# puts "#{@deck[12].line2} #{@deck[13].line2} #{@deck[14].line2} #{@deck[15].line2}"
+# puts "#{@deck[12].line3} #{@deck[13].line3} #{@deck[14].line3} #{@deck[15].line3}"
+# puts "#{@deck[12].line4} #{@deck[13].line4} #{@deck[14].line4} #{@deck[15].line4}"
+# puts "#{@deck[12].line5} #{@deck[13].line5} #{@deck[14].line5} #{@deck[15].line5}"
+# puts "#{@deck[12].line6} #{@deck[13].line6} #{@deck[14].line6} #{@deck[15].line6}"
+# puts "#{@deck[12].line7} #{@deck[13].line7} #{@deck[14].line7} #{@deck[15].line7}"
 
-# puts "#{deck[16].line1} #{deck[17].line1} #{deck[18].line1} #{deck[19].line1}"
-# puts "#{deck[16].line2} #{deck[17].line2} #{deck[18].line2} #{deck[19].line2}"
-# puts "#{deck[16].line3} #{deck[17].line3} #{deck[18].line3} #{deck[19].line3}"
-# puts "#{deck[16].line4} #{deck[17].line4} #{deck[18].line4} #{deck[19].line4}"
-# puts "#{deck[16].line5} #{deck[17].line5} #{deck[18].line5} #{deck[19].line5}"
-# puts "#{deck[16].line6} #{deck[17].line6} #{deck[18].line6} #{deck[19].line6}"
-# puts "#{deck[16].line7} #{deck[17].line7} #{deck[18].line7} #{deck[19].line7}"
+# puts "#{@deck[16].line1} #{@deck[17].line1} #{@deck[18].line1} #{@deck[19].line1}"
+# puts "#{@deck[16].line2} #{@deck[17].line2} #{@deck[18].line2} #{@deck[19].line2}"
+# puts "#{@deck[16].line3} #{@deck[17].line3} #{@deck[18].line3} #{@deck[19].line3}"
+# puts "#{@deck[16].line4} #{@deck[17].line4} #{@deck[18].line4} #{@deck[19].line4}"
+# puts "#{@deck[16].line5} #{@deck[17].line5} #{@deck[18].line5} #{@deck[19].line5}"
+# puts "#{@deck[16].line6} #{@deck[17].line6} #{@deck[18].line6} #{@deck[19].line6}"
+# puts "#{@deck[16].line7} #{@deck[17].line7} #{@deck[18].line7} #{@deck[19].line7}"
 
-# puts "#{deck[20].line1} #{deck[21].line1} #{deck[22].line1} #{deck[23].line1}"
-# puts "#{deck[20].line2} #{deck[21].line2} #{deck[22].line2} #{deck[23].line2}"
-# puts "#{deck[20].line3} #{deck[21].line3} #{deck[22].line3} #{deck[23].line3}"
-# puts "#{deck[20].line4} #{deck[21].line4} #{deck[22].line4} #{deck[23].line4}"
-# puts "#{deck[20].line5} #{deck[21].line5} #{deck[22].line5} #{deck[23].line5}"
-# puts "#{deck[20].line6} #{deck[21].line6} #{deck[22].line6} #{deck[23].line6}"
-# puts "#{deck[20].line7} #{deck[21].line7} #{deck[22].line7} #{deck[23].line7}"
+# puts "#{@deck[20].line1} #{@deck[21].line1} #{@deck[22].line1} #{@deck[23].line1}"
+# puts "#{@deck[20].line2} #{@deck[21].line2} #{@deck[22].line2} #{@deck[23].line2}"
+# puts "#{@deck[20].line3} #{@deck[21].line3} #{@deck[22].line3} #{@deck[23].line3}"
+# puts "#{@deck[20].line4} #{@deck[21].line4} #{@deck[22].line4} #{@deck[23].line4}"
+# puts "#{@deck[20].line5} #{@deck[21].line5} #{@deck[22].line5} #{@deck[23].line5}"
+# puts "#{@deck[20].line6} #{@deck[21].line6} #{@deck[22].line6} #{@deck[23].line6}"
+# puts "#{@deck[20].line7} #{@deck[21].line7} #{@deck[22].line7} #{@deck[23].line7}"
 
-# puts "#{deck[24].line1} #{deck[25].line1} #{deck[26].line1} #{deck[27].line1}"
-# puts "#{deck[24].line2} #{deck[25].line2} #{deck[26].line2} #{deck[27].line2}"
-# puts "#{deck[24].line3} #{deck[25].line3} #{deck[26].line3} #{deck[27].line3}"
-# puts "#{deck[24].line4} #{deck[25].line4} #{deck[26].line4} #{deck[27].line4}"
-# puts "#{deck[24].line5} #{deck[25].line5} #{deck[26].line5} #{deck[27].line5}"
-# puts "#{deck[24].line6} #{deck[25].line6} #{deck[26].line6} #{deck[27].line6}"
-# puts "#{deck[24].line7} #{deck[25].line7} #{deck[26].line7} #{deck[27].line7}"
+# puts "#{@deck[24].line1} #{@deck[25].line1} #{@deck[26].line1} #{@deck[27].line1}"
+# puts "#{@deck[24].line2} #{@deck[25].line2} #{@deck[26].line2} #{@deck[27].line2}"
+# puts "#{@deck[24].line3} #{@deck[25].line3} #{@deck[26].line3} #{@deck[27].line3}"
+# puts "#{@deck[24].line4} #{@deck[25].line4} #{@deck[26].line4} #{@deck[27].line4}"
+# puts "#{@deck[24].line5} #{@deck[25].line5} #{@deck[26].line5} #{@deck[27].line5}"
+# puts "#{@deck[24].line6} #{@deck[25].line6} #{@deck[26].line6} #{@deck[27].line6}"
+# puts "#{@deck[24].line7} #{@deck[25].line7} #{@deck[26].line7} #{@deck[27].line7}"
 
-# puts "#{deck[28].line1} #{deck[29].line1} #{deck[30].line1} #{deck[30].line1}"
-# puts "#{deck[28].line2} #{deck[29].line2} #{deck[30].line2} #{deck[30].line2}"
-# puts "#{deck[28].line3} #{deck[29].line3} #{deck[30].line3} #{deck[30].line3}"
-# puts "#{deck[28].line4} #{deck[29].line4} #{deck[30].line4} #{deck[30].line4}"
-# puts "#{deck[28].line5} #{deck[29].line5} #{deck[30].line5} #{deck[30].line5}"
-# puts "#{deck[28].line6} #{deck[29].line6} #{deck[30].line6} #{deck[30].line6}"
-# puts "#{deck[28].line7} #{deck[29].line7} #{deck[30].line7} #{deck[30].line7}"
+# puts "#{@deck[28].line1} #{@deck[29].line1} #{@deck[30].line1} #{@deck[31].line1}"
+# puts "#{@deck[28].line2} #{@deck[29].line2} #{@deck[30].line2} #{@deck[31].line2}"
+# puts "#{@deck[28].line3} #{@deck[29].line3} #{@deck[30].line3} #{@deck[31].line3}"
+# puts "#{@deck[28].line4} #{@deck[29].line4} #{@deck[30].line4} #{@deck[31].line4}"
+# puts "#{@deck[28].line5} #{@deck[29].line5} #{@deck[30].line5} #{@deck[31].line5}"
+# puts "#{@deck[28].line6} #{@deck[29].line6} #{@deck[30].line6} #{@deck[31].line6}"
+# puts "#{@deck[28].line7} #{@deck[29].line7} #{@deck[30].line7} #{@deck[31].line7}"
 
-# puts "#{deck[31].line1} #{deck[32].line1} #{deck[33].line1} #{deck[34].line1}"
-# puts "#{deck[31].line2} #{deck[32].line2} #{deck[33].line2} #{deck[34].line2}"
-# puts "#{deck[31].line3} #{deck[32].line3} #{deck[33].line3} #{deck[34].line3}"
-# puts "#{deck[31].line4} #{deck[32].line4} #{deck[33].line4} #{deck[34].line4}"
-# puts "#{deck[31].line5} #{deck[32].line5} #{deck[33].line5} #{deck[34].line5}"
-# puts "#{deck[31].line6} #{deck[32].line6} #{deck[33].line6} #{deck[34].line6}"
-# puts "#{deck[31].line7} #{deck[32].line7} #{deck[33].line7} #{deck[34].line7}"
+# puts "#{@deck[32].line1} #{@deck[33].line1} #{@deck[34].line1} #{@deck[35].line1}"
+# puts "#{@deck[32].line2} #{@deck[33].line2} #{@deck[34].line2} #{@deck[35].line2}"
+# puts "#{@deck[32].line3} #{@deck[33].line3} #{@deck[34].line3} #{@deck[35].line3}"
+# puts "#{@deck[32].line4} #{@deck[33].line4} #{@deck[34].line4} #{@deck[35].line4}"
+# puts "#{@deck[32].line5} #{@deck[33].line5} #{@deck[34].line5} #{@deck[35].line5}"
+# puts "#{@deck[32].line6} #{@deck[33].line6} #{@deck[34].line6} #{@deck[35].line6}"
+# puts "#{@deck[32].line7} #{@deck[33].line7} #{@deck[34].line7} #{@deck[35].line7}"
 
 # c6count = 0
 # c7count = 0
@@ -1069,3 +1033,230 @@ start.playermove(card)
 # 		puts "  #{@phand[0].line7}  #{@phand[1].line7}  #{@phand[2].line7}  #{@phand[3].line7}  #{@phand[4].line7}  #{@phand[5].line7}"
 # 		turn()
 # 	end
+
+# c6count = 0
+# c7count = 0
+# c8count = 0
+# c9count = 0
+# c10count = 0
+# cJcount = 0
+# cQcount = 0
+# cKcount = 0
+# cAcount = 0
+
+# d6count = 0
+# d7count = 0
+# d8count = 0
+# d9count = 0
+# d10count = 0
+# dJcount = 0
+# dQcount = 0
+# dKcount = 0
+# dAcount = 0
+
+# h6count = 0
+# h7count = 0
+# h8count = 0
+# h9count = 0
+# h10count = 0
+# hJcount = 0
+# hQcount = 0
+# hKcount = 0
+# hAcount = 0
+
+# s6count = 0
+# s7count = 0
+# s8count = 0
+# s9count = 0
+# s10count = 0
+# sJcount = 0
+# sQcount = 0
+# sKcount = 0
+# sAcount = 0
+
+# @deck.each{|x|
+# 	if x.suit == "club" && x.value == 6
+# 		c6count += 1
+# 	elsif x.suit == "club" && x.value == 7
+# 		c7count += 1
+# 	elsif x.suit == "club" && x.value == 8
+# 		c8count += 1
+# 	elsif x.suit == "club" && x.value == 9
+# 		c9count += 1
+# 	elsif x.suit == "club" && x.value == 10
+# 		c10count += 1
+# 	elsif x.suit == "club" && x.value == 11
+# 		cJcount += 1
+# 	elsif x.suit == "club" && x.value == 12
+# 		cQcount += 1
+# 	elsif x.suit == "club" && x.value == 13
+# 		cKcount += 1
+# 	elsif x.suit == "club" && x.value == 14
+# 		cAcount += 1
+# 	elsif x.suit == "spade" && x.value == 6
+# 		s6count += 1
+# 	elsif x.suit == "spade" && x.value == 7
+# 		s7count += 1
+# 	elsif x.suit == "spade" && x.value == 8
+# 		s8count += 1
+# 	elsif x.suit == "spade" && x.value == 9
+# 		s9count += 1
+# 	elsif x.suit == "spade" && x.value == 10
+# 		s10count += 1
+# 	elsif x.suit == "spade" && x.value == 11
+# 		sJcount += 1
+# 	elsif x.suit == "spade" && x.value == 12
+# 		sQcount += 1
+# 	elsif x.suit == "spade" && x.value == 13
+# 		sKcount += 1
+# 	elsif x.suit == "spade" && x.value == 14
+# 		sAcount += 1
+# 	elsif x.suit == "heart" && x.value == 6
+# 		h6count += 1
+# 	elsif x.suit == "heart" && x.value == 7
+# 		h7count += 1
+# 	elsif x.suit == "heart" && x.value == 8
+# 		h8count += 1
+# 	elsif x.suit == "heart" && x.value == 9
+# 		h9count += 1
+# 	elsif x.suit == "heart" && x.value == 10
+# 		h10count += 1
+# 	elsif x.suit == "heart" && x.value == 11
+# 		hJcount += 1
+# 	elsif x.suit == "heart" && x.value == 12
+# 		hQcount += 1
+# 	elsif x.suit == "heart" && x.value == 13
+# 		hKcount += 1
+# 	elsif x.suit == "heart" && x.value == 14
+# 		hAcount += 1
+# 	elsif x.suit == "diamond" && x.value == 6
+# 		d6count += 1
+# 	elsif x.suit == "diamond" && x.value == 7
+# 		d7count += 1
+# 	elsif x.suit == "diamond" && x.value == 8
+# 		d8count += 1
+# 	elsif x.suit == "diamond" && x.value == 9
+# 		d9count += 1
+# 	elsif x.suit == "diamond" && x.value == 10
+# 		d10count += 1
+# 	elsif x.suit == "diamond" && x.value == 11
+# 		dJcount += 1
+# 	elsif x.suit == "diamond" && x.value == 12
+# 		dQcount += 1
+# 	elsif x.suit == "diamond" && x.value == 13
+# 		dKcount += 1
+# 	elsif x.suit == "diamond" && x.value == 14
+# 		dAcount += 1
+# 	end }
+
+# 	puts "c6 count = #{c6count}"
+# puts "c7 count = #{c7count}"
+# puts "c8 count = #{c8count}"
+# puts "c9 count = #{c9count}"
+# puts "c10 count = #{c10count}"
+# puts "cJ count = #{cJcount}"
+# puts "cQ count = #{cQcount}"
+# puts "cK count = #{cKcount}"
+# puts "cA count = #{cAcount}"
+# puts " "
+# puts "d6 count = #{d6count}"
+# puts "d7 count = #{d7count}"
+# puts "d8 count = #{d8count}"
+# puts "d9 count = #{d9count}"
+# puts "d10 count = #{d10count}"
+# puts "dJ count = #{dJcount}"
+# puts "dQ count = #{dQcount}"
+# puts "dK count = #{dKcount}"
+# puts "dA count = #{dAcount}"
+# puts " "
+# puts "s6 count = #{s6count}"
+# puts "s7 count = #{s7count}"
+# puts "s8 count = #{s8count}"
+# puts "s9 count = #{s9count}"
+# puts "s10 count = #{s10count}"
+# puts "sJ count = #{sJcount}"
+# puts "sQ count = #{sQcount}"
+# puts "sK count = #{sKcount}"
+# puts "sA count = #{sAcount}"
+# puts " "
+# puts "h6 count = #{h6count}"
+# puts "h7 count = #{h7count}"
+# puts "h8 count = #{h8count}"
+# puts "h9 count = #{h9count}"
+# puts "h10 count = #{h10count}"
+# puts "hJ count = #{hJcount}"
+# puts "hQ count = #{hQcount}"
+# puts "hK count = #{hKcount}"
+# puts "hA count = #{hAcount}"			
+
+# puts "#{@deck[0].line1} #{@deck[1].line1} #{@deck[2].line1} #{@deck[3].line1}"
+# puts "#{@deck[0].line2} #{@deck[1].line2} #{@deck[2].line2} #{@deck[3].line2}"
+# puts "#{@deck[0].line3} #{@deck[1].line3} #{@deck[2].line3} #{@deck[3].line3}"
+# puts "#{@deck[0].line4} #{@deck[1].line4} #{@deck[2].line4} #{@deck[3].line4}"
+# puts "#{@deck[0].line5} #{@deck[1].line5} #{@deck[2].line5} #{@deck[3].line5}"
+# puts "#{@deck[0].line6} #{@deck[1].line6} #{@deck[2].line6} #{@deck[3].line6}"
+# puts "#{@deck[0].line7} #{@deck[1].line7} #{@deck[2].line7} #{@deck[3].line7}"
+
+# puts "#{@deck[4].line1} #{@deck[5].line1} #{@deck[6].line1} #{@deck[7].line1}"
+# puts "#{@deck[4].line2} #{@deck[5].line2} #{@deck[6].line2} #{@deck[7].line2}"
+# puts "#{@deck[4].line3} #{@deck[5].line3} #{@deck[6].line3} #{@deck[7].line3}"
+# puts "#{@deck[4].line4} #{@deck[5].line4} #{@deck[6].line4} #{@deck[7].line4}"
+# puts "#{@deck[4].line5} #{@deck[5].line5} #{@deck[6].line5} #{@deck[7].line5}"
+# puts "#{@deck[4].line6} #{@deck[5].line6} #{@deck[6].line6} #{@deck[7].line6}"
+# puts "#{@deck[4].line7} #{@deck[5].line7} #{@deck[6].line7} #{@deck[7].line7}"
+
+# puts "#{@deck[8].line1} #{@deck[9].line1} #{@deck[10].line1} #{@deck[11].line1}"
+# puts "#{@deck[8].line2} #{@deck[9].line2} #{@deck[10].line2} #{@deck[11].line2}"
+# puts "#{@deck[8].line3} #{@deck[9].line3} #{@deck[10].line3} #{@deck[11].line3}"
+# puts "#{@deck[8].line4} #{@deck[9].line4} #{@deck[10].line4} #{@deck[11].line4}"
+# puts "#{@deck[8].line5} #{@deck[9].line5} #{@deck[10].line5} #{@deck[11].line5}"
+# puts "#{@deck[8].line6} #{@deck[9].line6} #{@deck[10].line6} #{@deck[11].line6}"
+# puts "#{@deck[8].line7} #{@deck[9].line7} #{@deck[10].line7} #{@deck[11].line7}"
+
+# puts "#{@deck[12].line1} #{@deck[13].line1} #{@deck[14].line1} #{@deck[15].line1}"
+# puts "#{@deck[12].line2} #{@deck[13].line2} #{@deck[14].line2} #{@deck[15].line2}"
+# puts "#{@deck[12].line3} #{@deck[13].line3} #{@deck[14].line3} #{@deck[15].line3}"
+# puts "#{@deck[12].line4} #{@deck[13].line4} #{@deck[14].line4} #{@deck[15].line4}"
+# puts "#{@deck[12].line5} #{@deck[13].line5} #{@deck[14].line5} #{@deck[15].line5}"
+# puts "#{@deck[12].line6} #{@deck[13].line6} #{@deck[14].line6} #{@deck[15].line6}"
+# puts "#{@deck[12].line7} #{@deck[13].line7} #{@deck[14].line7} #{@deck[15].line7}"
+
+# puts "#{@deck[16].line1} #{@deck[17].line1} #{@deck[18].line1} #{@deck[19].line1}"
+# puts "#{@deck[16].line2} #{@deck[17].line2} #{@deck[18].line2} #{@deck[19].line2}"
+# puts "#{@deck[16].line3} #{@deck[17].line3} #{@deck[18].line3} #{@deck[19].line3}"
+# puts "#{@deck[16].line4} #{@deck[17].line4} #{@deck[18].line4} #{@deck[19].line4}"
+# puts "#{@deck[16].line5} #{@deck[17].line5} #{@deck[18].line5} #{@deck[19].line5}"
+# puts "#{@deck[16].line6} #{@deck[17].line6} #{@deck[18].line6} #{@deck[19].line6}"
+# puts "#{@deck[16].line7} #{@deck[17].line7} #{@deck[18].line7} #{@deck[19].line7}"
+
+# puts "#{@deck[20].line1} #{@deck[21].line1} #{@deck[22].line1} #{@deck[23].line1}"
+# puts "#{@deck[20].line2} #{@deck[21].line2} #{@deck[22].line2} #{@deck[23].line2}"
+# puts "#{@deck[20].line3} #{@deck[21].line3} #{@deck[22].line3} #{@deck[23].line3}"
+# puts "#{@deck[20].line4} #{@deck[21].line4} #{@deck[22].line4} #{@deck[23].line4}"
+# puts "#{@deck[20].line5} #{@deck[21].line5} #{@deck[22].line5} #{@deck[23].line5}"
+# puts "#{@deck[20].line6} #{@deck[21].line6} #{@deck[22].line6} #{@deck[23].line6}"
+# puts "#{@deck[20].line7} #{@deck[21].line7} #{@deck[22].line7} #{@deck[23].line7}"
+
+# puts "#{@deck[24].line1} #{@deck[25].line1} #{@deck[26].line1} #{@deck[27].line1}"
+# puts "#{@deck[24].line2} #{@deck[25].line2} #{@deck[26].line2} #{@deck[27].line2}"
+# puts "#{@deck[24].line3} #{@deck[25].line3} #{@deck[26].line3} #{@deck[27].line3}"
+# puts "#{@deck[24].line4} #{@deck[25].line4} #{@deck[26].line4} #{@deck[27].line4}"
+# puts "#{@deck[24].line5} #{@deck[25].line5} #{@deck[26].line5} #{@deck[27].line5}"
+# puts "#{@deck[24].line6} #{@deck[25].line6} #{@deck[26].line6} #{@deck[27].line6}"
+# puts "#{@deck[24].line7} #{@deck[25].line7} #{@deck[26].line7} #{@deck[27].line7}"
+
+# puts "#{@deck[28].line1} #{@deck[29].line1} #{@deck[30].line1} #{@deck[31].line1}"
+# puts "#{@deck[28].line2} #{@deck[29].line2} #{@deck[30].line2} #{@deck[31].line2}"
+# puts "#{@deck[28].line3} #{@deck[29].line3} #{@deck[30].line3} #{@deck[31].line3}"
+# puts "#{@deck[28].line4} #{@deck[29].line4} #{@deck[30].line4} #{@deck[31].line4}"
+# puts "#{@deck[28].line5} #{@deck[29].line5} #{@deck[30].line5} #{@deck[31].line5}"
+# puts "#{@deck[28].line6} #{@deck[29].line6} #{@deck[30].line6} #{@deck[31].line6}"
+# puts "#{@deck[28].line7} #{@deck[29].line7} #{@deck[30].line7} #{@deck[31].line7}"
+
+# puts "#{@deck[32].line1} #{@deck[33].line1} #{@deck[34].line1} #{@deck[35].line1}"
+# puts "#{@deck[32].line2} #{@deck[33].line2} #{@deck[34].line2} #{@deck[35].line2}"
+# puts "#{@deck[32].line3} #{@deck[33].line3} #{@deck[34].line3} #{@deck[35].line3}"
+# puts "#{@deck[32].line4} #{@deck[33].line4} #{@deck[34].line4} #{@deck[35].line4}"
+# puts "#{@deck[32].line5} #{@deck[33].line5} #{@deck[34].line5} #{@deck[35].line5}"
+# puts "#{@deck[32].line6} #{@deck[33].line6} #{@deck[34].line6} #{@deck[35].line6}"
+# puts "#{@deck[32].line7} #{@deck[33].line7} #{@deck[34].line7} #{@deck[35].line7}"
