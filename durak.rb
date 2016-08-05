@@ -229,18 +229,13 @@ class Game
 	def playermove
 		playable() #identify playable cards
 
-		# p @phand.each{|x| 
-		# if x.canplay
-		# 	p x.name
-		# end}
-
 		setup() #show game table with playable cards highlighted
 		cardid = "      " #empty sring to identify cards for the user
 		@phand.count.times{|x| #put numbers under player cards
 			if x==0
-				cardid  += "#{x}"
+				cardid  += "#{x+1}"
 			else
-				cardid  += "          #{x}" 
+				cardid  += "          #{x+1}" 
 			end}
 		puts cardid
 		if @attacker == "opponent"
@@ -248,12 +243,27 @@ class Game
 		else
 			puts "You are attaking. pick a card."
 		end  
-		card=gets.chomp.to_i
-		if @turn == "player"
 
-			card = gets.chomp
-			
-			card -= 1
+		validinput = false #verify input
+		until validinput
+			card = gets.chomp.to_i 
+			card -= 1 #get user input in a form that matches array index
+
+			if card.class != Fixnum || card > @phand.count-1 || card < 0
+				puts "Please choose #{(1..@phand.count-1).to_a.join(", ")}, or #{@phand.count}."
+			elsif @inplay.count !=0
+				if @phand[card].canplay == false
+					num = @attack.name.split #get the name of the card
+					num = num[0].to_s #only get the first part of the name
+					puts "To defend you have to play a #{@trump.suit} to trump, or a #{@attack.suit} higher than the #{num}."
+					puts "You can also transfer with a #{num} of a different suit."
+				end
+			else
+				validinput = true
+			end
+		end
+
+		if @turn == "player"
 			@attack = @phand[card] 
 			@phand.delete_at(card)
 		else
@@ -265,8 +275,6 @@ class Game
 	end
 
 	def playable
-		p @inplay.count
-		p "in play: #{@inplay[0].name}"
 		if @inplay.count == 0
 			@phand.each{|x| x.canplay = false} #if player is attacking first, they can play any card
 		else
