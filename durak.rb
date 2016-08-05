@@ -1,12 +1,14 @@
 class Card # make card
-	attr_reader :suit, :name, :value, :b_line1, :b_line2, 
+	attr_reader :suit, :name, :value, :b_line1, :b_line2, #the attributes of card that can be read
 	:b_line3, :b_line4, :b_line5, :b_line6, :b_line7,
 	:line1, :line2, :line3, :line4, :line5, :line6, :line7
+	attr_accessor :canplay #the attribute of card that can be read and written
 
 	def initialize(suit, value, name, line2, line3, line4, line5, line6)
-		@suit = suit
-		@value = value
-		@name = name
+		@suit = suit #card suit
+		@value = value #value acording to face
+		@name = name #name to print to console
+		@canplay = false #unless card meets certian conditions it cannot be played
 
 		@b_line1 = "╔═══════╗"
 		@b_line2 = "║╔═════╗║"
@@ -32,7 +34,8 @@ class Game
 		@phand =[] #create empty array for player
 		@ohand =[] #create empty array for player
 		@first = true #establish first turn as different 
-		shuffle() #randomly order deck array
+		@attacker = "" #designates player as either attacker or defender
+		@inplay =[] #keeps track of cards in play
 		@attack = nil #set holder for attacing card
 		# @attack2 = nil
 		# @attack3 = nil
@@ -41,6 +44,8 @@ class Game
 		# @defend1 = nil
 		# @defend1 = nil
 		# @defend1 = nil
+
+		shuffle() #randomly order deck array
 	end
 	
 	def shuffle #randomly order deck array
@@ -51,10 +56,6 @@ class Game
 			@deck[x] = temp #put card from current location in random location
 		}
 		
-
-
-
-
 		deal() #fill player and opponent arrays
 	end
 	
@@ -65,7 +66,7 @@ class Game
 		}
 		@trump = @deck[-1] #set trump to suit of bottom card
 		order() #put player cards in order of value
-		setup() #show cards
+		turn() #determine who goes first
 	end
 
 	def order()
@@ -86,10 +87,10 @@ class Game
 				spade_ary << x #put all spades into spade array
 			end}
 
-		club_ary = club_ary.sort_by{|x| x.value}
-		diamond_ary = diamond_ary.sort_by{|x| x.value}
-		heart_ary = heart_ary.sort_by{|x| x.value}
-		spade_ary = spade_ary.sort_by{|x| x.value}
+		club_ary = club_ary.sort_by{|x| x.value}.reverse #sort clubs by card value
+		diamond_ary = diamond_ary.sort_by{|x| x.value}.reverse #sort diamonds by card value
+		heart_ary = heart_ary.sort_by{|x| x.value}.reverse #sort heartss by card value
+		spade_ary = spade_ary.sort_by{|x| x.value}.reverse #sort spades by card value
 		
 		if @trump.suit == "club" #if #trump is club put clubs first
 			club_ary.each{|x| ordered << x}
@@ -190,12 +191,12 @@ class Game
 		puts "#{pline5}"
 		puts "#{pline6}"
 		puts "#{pline7}"
-		turn()
 	end
 
 	def turn
 		if @first 
 			@first = false #run first turn 1 time
+			
 			#find lowest trump to go first
 			ptrump = 20 #compare value of cards in player's hand to high number
 			otrump = 20 #compare value of cards in player's hand to high number
@@ -215,11 +216,11 @@ class Game
 				end}
 			if ptrump < otrump #prompt either player or opponent to go first
 				@turn = "player"
+				@attacker = "player"
 				playermove()
 			else
-				puts " "
-				puts "Opponent is attacker. Opponent plays #{"opponent's card"}"
 				@turn = "opponent"
+				@attacker = "opponent"
 				opponentmove()
 			end
 		end
@@ -227,12 +228,29 @@ class Game
 
 	def playermove
 		playable() #identify playable cards
-		#setup() #show game table with playable cards highlighted
-		cardid = "" #empty sring to identify cards for the user
-		@phand.count.times{|x|cardid  += "      #{x}"} #put numbers under player cards
+
+		# p @phand.each{|x| 
+		# if x.canplay
+		# 	p x.name
+		# end}
+
+		setup() #show game table with playable cards highlighted
+		cardid = "      " #empty sring to identify cards for the user
+		@phand.count.times{|x| #put numbers under player cards
+			if x==0
+				cardid  += "#{x}"
+			else
+				cardid  += "          #{x}" 
+			end}
+		puts cardid
+		if @attacker == "opponent"
+			puts "Opponent attacks with #{@attack.name}, chose your defense."
+		else
+			puts "You are attaking. pick a card."
+		end  
 		card=gets.chomp.to_i
 		if @turn == "player"
-			puts "Player is attacker. Which card would you like to play?"
+
 			card = gets.chomp
 			
 			card -= 1
@@ -247,12 +265,29 @@ class Game
 	end
 
 	def playable
-		# @phand.each{|x|
-		# 	if x.suit == @trump.suit || (x.suit == @attack.suit && x.value>@attack.value) || x.value == @attack.value || x.value == @defend.value
-		# 		#x.canplay = true
-		# 	else
-		# 		#x.canplay = false
-		# 	end}
+		p @inplay.count
+		p "in play: #{@inplay[0].name}"
+		if @inplay.count == 0
+			@phand.each{|x| x.canplay = false} #if player is attacking first, they can play any card
+		else
+			@phand.each{|x| #go through player hand
+				if x.suit == @trump.suit #player can always trump
+					x.canplay = true
+					p "#{x.name} because trump."
+				elsif (x.suit == @attack.suit && x.value>@attack.value) #player can play a higher card of the same suit
+					x.canplay = true
+					p "#{x.name} because higher value, same suit."
+				else
+					x.canplay = false
+				end}
+			@inplay.each{|x|
+				@phand.each{|y|
+					if y.value == x.value #Players can 'transfer' if they can match the value of a card in play
+						y.canplay = true
+						p "#{y.name} because transfer."
+					end}
+			}
+		end
 	end
 
 	def opponentmove
@@ -264,6 +299,7 @@ class Game
 					if x.value > @attack.value
 						@defend = x
 						card = x
+						@inplay << x
 					end
 				end}
 			if @defend == nil
@@ -271,12 +307,14 @@ class Game
 				if x.suit == @trump.suit
 					if x.value < otrump
 						@defend = x
+						@inplay << x
 					end
 				end}
 			end
 
 			if @defend == nil
 				puts "The opponent takes."
+				@phand += @inplay
 			else 
 			 	@ohand.delete(@defend)
 			end
@@ -289,9 +327,8 @@ class Game
 					end
 				end}
 			@ohand.delete(@attack)
+			@inplay << @attack
 		end
-		setup()
-		puts "Opponent is attacking, chose your defense."
 		playermove()
 	end
 
@@ -354,8 +391,8 @@ class Game
 		deck << s10
 		sJ = Card.new(
 			"spade",
-			"jack of spades",
 			11,
+			"jack of spades",
 			"║J      ║",
 			"║ A  ♠  ║",
 			"║   C   ║",
