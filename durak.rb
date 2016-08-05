@@ -1,11 +1,12 @@
-class Card
-	attr_reader :suit, :value, :b_line1, :b_line2, 
+class Card # make card
+	attr_reader :suit, :name, :value, :b_line1, :b_line2, 
 	:b_line3, :b_line4, :b_line5, :b_line6, :b_line7,
 	:line1, :line2, :line3, :line4, :line5, :line6, :line7
 
-	def initialize(suit, value, line2, line3, line4, line5, line6)
+	def initialize(suit, value, name, line2, line3, line4, line5, line6)
 		@suit = suit
 		@value = value
+		@name = name
 
 		@b_line1 = "╔═══════╗"
 		@b_line2 = "║╔═════╗║"
@@ -27,46 +28,145 @@ end
 
 class Game
 	def initialize()
-		@deck = create_deck
-		@phand =[]
-		@ohand =[]
-		@first = true
-		shuffle()
-		@attack = nil
+		@deck = create_deck #create array of 32 cards
+		@phand =[] #create empty array for player
+		@ohand =[] #create empty array for player
+		@first = true #establish first turn as different 
+		shuffle() #randomly order deck array
+		@attack = nil #set holder for attacing card
 		# @attack2 = nil
 		# @attack3 = nil
 		# @attack4 = nil
-		@defend = nil
+		@defend = nil #set holder for defending card
 		# @defend1 = nil
 		# @defend1 = nil
 		# @defend1 = nil
 	end
 	
-	def shuffle
-		@deck.length.times{|x|
-			location = rand(@deck.length)
-			temp = @deck[location]
-			@deck[location] = @deck[x]
-			@deck[x] = temp
+	def shuffle #randomly order deck array
+		@deck.length.times{|x| #get location of cards in order
+			location = rand(@deck.length) #get place of random card
+			temp = @deck[rand(@deck.length)] #hold random card
+			@deck[location] = @deck[x] #put random card in current location
+			@deck[x] = temp #put card from current location in random location
 		}
 
-		deal()
-	#return deck
+		deal() #fill player and opponent arrays
 	end
 	
 	def deal
-		6.times{
-			@phand << @deck.shift
-			@ohand << @deck.shift
+		6.times{ #give each player 6 cards from the top of the deck
+			@phand << @deck.shift #put next card in player hand
+			@ohand << @deck.shift #put next card in opponet hand
 		}
-		setup()
+		@trump = @deck[-1] #set trump to suit of bottom card
+		order() #put player cards in order of value
+		setup() #show cards
+	end
+
+	def order()
+		ordered = [] #empty array for player cards in order
+		club_ary = [] #empty array for clubs
+		diamond_ary = [] #empty array for diamonds
+		heart_ary = [] #empty array for hearts
+		spade_ary = [] #empty array for spades
+
+		@phand.each{|x|
+			if x.suit == "club" #identify clubs
+				club_ary << x #put all clubs into club array
+			elsif x.suit == "diamond" #identify diamonsd
+				diamond_ary << x #put all diamonds into diamond array
+			elsif x.suit == "heart" #identify heartss
+				heart_ary << x #put all hearts into heart array
+			elsif x.suit == "spade" #identify spades
+				spade_ary << x #put all spades into spade array
+			end}
+
+		@phand.each{|x| p x.name}
+		p "Suits"
+		club_ary.sort_by!{|x|x.value}
+		club_ary.each{|x| p x.name}
+		diamond_ary.sort_by!{|x|x.value}
+		diamond_ary.each{|x|  p x.name}
+		heart_ary.sort_by!{|x| x.value}
+		heart_ary.each{|x| p x.name}
+		spade_ary.sort_by!{|x|x.value}
+		spade_ary.each{|x| p x.name}
+		
+		# sorting = false #sort suit arrays
+		# until sorting
+		# club_ary.count.times{|x|
+		# 	sorting = true
+		# 	p club_ary 
+		# 	if (club_ary[x] != nil && club_ary[x+1] != nil) #check for content
+		# 		if club_ary[x].value < club_ary[x+1].value #check if the value of something earlier in the array is smaller that the thing next to it
+		# 			club_ary[x], club_ary[x+1] = club_ary[x+1], club_ary[x] #if so switch
+		# 			sorting = false #if any switches were made run the sort again
+		# 		end
+		# 	end}
+		# end
+		# sorting = false #sort suit arrays
+		# until sorting
+		# diamond_ary.count.times{|x|
+		# 	sorting = true 
+		# 	if (diamond_ary[x] != nil && diamond_ary[x+1] != nil) #check for content
+		# 		if diamond_ary[x].value < diamond_ary[x+1].value #check if the value of something earlier in the array is smaller that the thing next to it
+		# 			diamond_ary[x], diamond_ary[x+1] = diamond_ary[x+1], diamond_ary[x] #if so switch
+		# 			sorting = false #if any switches were made run the sort again
+		# 		end
+		# 	end}
+		# end
+		# sorting = false #sort suit arrays
+		# until sorting
+		# heart_ary.count.times{|x|
+		# 	sorting = true 
+		# 	p heart_ary
+		# 	if (heart_ary[x] != nil && heart_ary[x+1] != nil) #check for content
+		# 		if heart_ary[x].value < heart_ary[x+1].value #check if the value of something earlier in the array is smaller that the thing next to it
+		# 			heart_ary[x], heart_ary[x+1] = heart_ary[x+1], heart_ary[x] #if so switch
+		# 			sorting = false #if any switches were made run the sort again
+		# 		end
+		# 	end}
+		# end
+		# sorting = false #sort suit arrays
+		# until sorting
+		# spade_ary.count.times{|x|
+		# 	sorting = true 
+		# 	if (spade_ary[x] != nil && spade_ary[x+1] != nil) #check for content
+		# 		if spade_ary[x].value < spade_ary[x+1].value #check if the value of something earlier in the array is smaller that the thing next to it
+		# 			spade_ary[x], spade_ary[x+1] = spade_ary[x+1], spade_ary[x] #if so switch
+		# 			sorting = false #if any switches were made run the sort again
+		# 		end
+		# 	end}
+		# end
+		if @trump.suit == "club" #if #trump is club put clubs first
+			club_ary.each{|x| ordered << x}
+			diamond_ary.each{|x| ordered << x}
+			heart_ary.each{|x| ordered << x}
+			spade_ary.each{|x| ordered << x}
+		elsif @trump.suit == "diamond" #if #trump is diamond put diamonds first
+			diamond_ary.each{|x| ordered << x}
+			club_ary.each{|x| ordered << x}
+			heart_ary.each{|x| ordered << x}
+			spade_ary.each{|x| ordered << x}
+		elsif @trump.suit == "heart" #if #trump is heart put hearts first
+			heart_ary.each{|x| ordered << x}
+			diamond_ary.each{|x| ordered << x}
+			club_ary.each{|x| ordered << x}
+			spade_ary.each{|x| ordered << x}
+		elsif @trump.suit == "spade" #if #trump is spade put spades first
+			spade_ary.each{|x| ordered << x}
+			heart_ary.each{|x| ordered << x}
+			diamond_ary.each{|x| ordered << x}
+			club_ary.each{|x| ordered << x}
+			end
 	end
 
 	def setup
-		oline1 = oline2 = oline3 = oline4 = oline5 = oline6 = oline7 = ""
-		pline1 = pline2 = pline3 = pline4 = pline5 = pline6 = pline7 = ""
+		oline1 = oline2 = oline3 = oline4 = oline5 = oline6 = oline7 = "" #initialze strings that will show oponent cards  
+		pline1 = pline2 = pline3 = pline4 = pline5 = pline6 = pline7 = "" #initialze strings that will show oponent cards
 		
-		@ohand.count.times{|x| oline1 += "  #{@ohand[x].b_line1}"}
+		@ohand.count.times{|x| oline1 += "  #{@ohand[x].b_line1}"} #fill opponent strings
 		@ohand.count.times{|x| oline2 += "  #{@ohand[x].b_line2}"}
 		@ohand.count.times{|x| oline3 += "  #{@ohand[x].b_line3}"}
 		@ohand.count.times{|x| oline4 += "  #{@ohand[x].b_line4}"}
@@ -74,7 +174,7 @@ class Game
 		@ohand.count.times{|x| oline6 += "  #{@ohand[x].b_line6}"}
 		@ohand.count.times{|x| oline7 += "  #{@ohand[x].b_line7}"}
 		
-		puts "#{oline1}"
+		puts "#{oline1}" #display opponent cards face down
 		puts "#{oline2}"
 		puts "#{oline3}"
 		puts "#{oline4}"
@@ -82,10 +182,10 @@ class Game
 		puts "#{oline6}"
 		puts "#{oline7}"
 
-		if @attack == nil
+		if @attack == nil # display if no cards have been played
 			puts "\n"
 			puts "                                                        T R U M P"
-			puts "                                             #{@deck[0].b_line1}  #{@deck[-1].line1}"
+			puts "                                             #{@deck[0].b_line1}  #{@deck[-1].line1}" #show bottom card as trump
 			puts "                                             #{@deck[0].b_line2}  #{@deck[-1].line2}"
 			puts "                                             #{@deck[0].b_line3}  #{@deck[-1].line3}"
 			puts "                                             #{@deck[0].b_line4}  #{@deck[-1].line4}"
@@ -94,7 +194,7 @@ class Game
 			puts "                                             #{@deck[0].b_line7}  #{@deck[-1].line7}"
 			puts "\n"
 			puts "\n"
-		elsif @defend == nil
+		elsif @defend == nil #display if 1 card has been played
 			puts "\n"
 			puts "                 #{@attack.line1}                              T R U M P"
 			puts "                 #{@attack.line2}                   #{@deck[0].b_line1}  #{@deck[-1].line1}"
@@ -106,7 +206,7 @@ class Game
 			puts "                                             #{@deck[0].b_line7}  #{@deck[-1].line7}"
 			puts "\n"
 			puts "\n"
-		else
+		else #display if 2 cards have been played
 			puts "\n"
 			puts "                 #{@attack.line1}                              T R U M P"
 			puts "                 #{@attack.line2}                   #{@deck[0].b_line1}  #{@deck[-1].line1}"
@@ -119,8 +219,8 @@ class Game
 			puts "                 #{@defend.line6}"
 			puts "                 #{@defend.line7}"
 		end
-
-		@phand.count.times{|x| pline1 += "  #{@phand[x].line1}"}
+		
+		@phand.count.times{|x| pline1 += "  #{@phand[x].line1}"} #create player strings
 		@phand.count.times{|x| pline2 += "  #{@phand[x].line2}"}
 		@phand.count.times{|x| pline3 += "  #{@phand[x].line3}"}
 		@phand.count.times{|x| pline4 += "  #{@phand[x].line4}"}
@@ -128,7 +228,8 @@ class Game
 		@phand.count.times{|x| pline6 += "  #{@phand[x].line6}"}
 		@phand.count.times{|x| pline7 += "  #{@phand[x].line7}"}
 		
-		puts "#{pline1}"
+		puts "\n" #if card can be played shift it up 1 row
+		puts "#{pline1}" #display player cards face up
 		puts "#{pline2}"
 		puts "#{pline3}"
 		puts "#{pline4}"
@@ -140,39 +241,46 @@ class Game
 
 	def turn
 		if @first 
-			ptrump = 20
-			otrump = 20
-			@trump = @deck[-1]
+			@first = false #run first turn 1 time
+			#find lowest trump to go first
+			ptrump = 20 #compare value of cards in player's hand to high number
+			otrump = 20 #compare value of cards in player's hand to high number
 			
-			@ohand.each{|x|
-				if x.suit == @trump.suit
-					if x.value < otrump
-						otrump = x.value
+			@ohand.each{|x| #search oponents hand for lowest trump
+				if x.suit == @trump.suit #only look at trump suit
+					if x.value < otrump #compare value of trum cards
+						otrump = x.value #keep value of lowest trump
 					end
 				end}
 
-			@phand.each{|x|
-				if x.suit == @trump.suit
-					if x.value < ptrump
-						ptrump = x.value
+			@phand.each{|x| #search players hand for lowest trump
+				if x.suit == @trump.suit #only look at trump suit
+					if x.value < ptrump #compare value of trum cards
+						ptrump = x.value ##keep value of lowest trump
 					end
 				end}
-			if ptrump < otrump
-				puts "      1          2          3          4          5          6 "
-				puts "Player is attacker. Which card would you like to play?"
+			if ptrump < otrump #prompt either player or opponent to go first
 				@turn = "player"
+				playermove()
 			else
 				puts " "
 				puts "Opponent is attacker. Opponent plays #{"opponent's card"}"
 				@turn = "opponent"
 				opponentmove()
 			end
-			@first = false
 		end
 	end
 
-	def playermove(card)
+	def playermove()
+		#playable() #identify playable cards
+		setup() #show game table with playable cards highlighted
+		cardid = "" #empty sring to identify cards for the user
+		@phand.count.times{|x|cardid  += "      #{x}"} #put numbers under player cards
+
 		if @turn == "player"
+			puts "Player is attacker. Which card would you like to play?"
+			card = gets.chomp
+			
 			card -= 1
 			@attack = @phand[card] 
 			@phand.delete_at(card)
@@ -231,6 +339,7 @@ def create_deck
 	s6 = Card.new(
 		"spade",
 		6,
+		"six of spades",
 		"║6      ║",
 		"║ ♠   ♠ ║",
 		"║ ♠   ♠ ║",
@@ -241,6 +350,7 @@ def create_deck
 	s7 = Card.new(
 		"spade",
 		7,
+		"seven of spades",
 		"║7      ║",
 		"║ ♠   ♠ ║",
 		"║ ♠ ♠ ♠ ║",
@@ -251,6 +361,7 @@ def create_deck
 	s8 = Card.new(
 		"spade",
 		8,
+		"eight of spades",
 		"║8      ║",
 		"║ ♠ ♠ ♠ ║",
 		"║  ♠ ♠  ║",
@@ -261,6 +372,7 @@ def create_deck
 	s9 = Card.new(
 		"spade",
 		9,
+		"nine of spades",
 		"║9      ║",
 		"║ ♠ ♠ ♠ ║",
 		"║ ♠ ♠ ♠ ║",
@@ -271,6 +383,7 @@ def create_deck
 	s10 = Card.new(
 		"spade",
 		10,
+		"ten of spades",
 		"║10     ║",
 		"║♠ ♠ ♠ ♠║",
 		"║ ♠   ♠ ║",
@@ -280,6 +393,7 @@ def create_deck
 	deck << s10
 	sJ = Card.new(
 		"spade",
+		"jack of spades",
 		11,
 		"║J      ║",
 		"║ A  ♠  ║",
@@ -291,6 +405,7 @@ def create_deck
 	sQ = Card.new(
 		"spade",
 		12,
+		"queen of spades",
 		"║Q      ║",
 		"║ °\\♠/° ║",
 	    "║  |°|  ║",
@@ -301,6 +416,7 @@ def create_deck
 	sK = Card.new(
 		"spade",
 		13,
+		"king of spades",
 		"║K      ║",
 		"║ ♠ ♠ ♠ ║",
 		"║ |VVV| ║",
@@ -311,6 +427,7 @@ def create_deck
 	sA = Card.new(
 		"spade",
 		14,
+		"ace of spades",
 		"║A♠     ║",
 		"║       ║",
 		"║   ♠   ║",
@@ -321,6 +438,7 @@ def create_deck
 	c6 = Card.new(
 		"club",
 		6,
+		"six of clubs",
 		"║6      ║",
 		"║ ♣   ♣ ║",
 		"║ ♣   ♣ ║",
@@ -331,6 +449,7 @@ def create_deck
 	c7 = Card.new(
 		"club",
 		7,
+		"seven of clubs",
 		"║7      ║",
 		"║ ♣   ♣ ║",
 		"║ ♣ ♣ ♣ ║",
@@ -341,6 +460,7 @@ def create_deck
 	c8 = Card.new(
 		"club",
 		8,
+		"eight of clubs",
 		"║8      ║",
 		"║ ♣ ♣ ♣ ║",
 		"║  ♣ ♣  ║",
@@ -351,6 +471,7 @@ def create_deck
 	c9 = Card.new(
 		"club",
 		9,
+		"nine of clubs",
 		"║9      ║",
 		"║ ♣ ♣ ♣ ║",
 		"║ ♣ ♣ ♣ ║",
@@ -361,6 +482,7 @@ def create_deck
 	c10 = Card.new(
 		"club",
 		10,
+		"ten of clubs",
 		"║10     ║",
 		"║♣ ♣ ♣ ♣║",
 		"║ ♣   ♣ ║",
@@ -371,6 +493,7 @@ def create_deck
 	cJ = Card.new(
 		"club",
 		11,
+		"jack of clubs",
 		"║J      ║",
 		"║ A  ♣  ║",
 		"║   C   ║",
@@ -381,6 +504,7 @@ def create_deck
 	cQ = Card.new(
 		"club",
 		12,
+		"queen of clubs",
 		"║Q      ║",
 		"║ °\\♣/° ║",
 	    "║  |°|  ║",
@@ -391,6 +515,7 @@ def create_deck
 	cK = Card.new(
 		"club",
 		13,
+		"king of clubs",
 		"║K      ║",
 		"║ ♣ ♣ ♣ ║",
 		"║ |VVV| ║",
@@ -401,6 +526,7 @@ def create_deck
 	cA = Card.new(
 		"club",
 		14,
+		"ace of clubs",
 		"║A♣     ║",
 		"║       ║",
 		"║   ♣   ║",
@@ -411,6 +537,7 @@ def create_deck
 	h6 = Card.new(
 		"heart",
 		6,
+		"six of hearts",
 		"║6      ║",
 		"║ ♥   ♥ ║",
 		"║ ♥   ♥ ║",
@@ -421,6 +548,7 @@ def create_deck
 	h7 = Card.new(
 		"heart",
 		7,
+		"seven of hearts",
 		"║7      ║",
 		"║ ♥   ♥ ║",
 		"║ ♥ ♥ ♥ ║",
@@ -431,6 +559,7 @@ def create_deck
 	h8 = Card.new(
 		"heart",
 		8,
+		"eight of hearts",
 		"║8      ║",
 		"║ ♥ ♥ ♥ ║",
 		"║  ♥ ♥  ║",
@@ -441,6 +570,7 @@ def create_deck
 	h9 = Card.new(
 		"heart",
 		9,
+		"nine of hearts",
 		"║9      ║",
 		"║ ♥ ♥ ♥ ║",
 		"║ ♥ ♥ ♥ ║",
@@ -451,6 +581,7 @@ def create_deck
 	h10 = Card.new(
 		"heart",
 		10,
+		"ten of hearts",
 		"║10     ║",
 		"║♥ ♥ ♥ ♥║",
 		"║ ♥   ♥ ║",
@@ -461,6 +592,7 @@ def create_deck
 	hJ = Card.new(
 		"heart",
 		11,
+		"jack of hearts",
 		"║J      ║",
 		"║ A  ♥  ║",
 		"║   C   ║",
@@ -471,6 +603,7 @@ def create_deck
 	hQ = Card.new(
 		"heart",
 		12,
+		"queen of hearts",
 		"║Q      ║",
 		"║ °\\♥/° ║",
 	    "║  |°|  ║",
@@ -481,6 +614,7 @@ def create_deck
 	hK = Card.new(
 		"heart",
 		13,
+		"king of hearts",
 		"║K      ║",
 		"║ ♥ ♥ ♥ ║",
 		"║ |VVV| ║",
@@ -491,6 +625,7 @@ def create_deck
 	hA = Card.new(
 		"heart",
 		14,
+		"ace of hearts",
 		"║A♥     ║",
 		"║       ║",
 		"║   ♥   ║",
@@ -499,8 +634,9 @@ def create_deck
 		)
 	deck << hA
 	d6 = Card.new(
-		"dimond",
+		"diamond",
 		6,
+		"six of diamonds",
 		"║6      ║",
 		"║ ♦   ♦ ║",
 		"║ ♦   ♦ ║",
@@ -509,8 +645,9 @@ def create_deck
 		)
 	deck << d6
 	d7 = Card.new(
-		"dimond",
+		"diamond",
 		7,
+		"seven of diamonds",
 		"║7      ║",
 		"║ ♦   ♦ ║",
 		"║ ♦ ♦ ♦ ║",
@@ -519,8 +656,9 @@ def create_deck
 		)
 	deck << d7
 	d8 = Card.new(
-		"dimond",
+		"diamond",
 		8,
+		"eight of diamonds",
 		"║8      ║",
 		"║ ♦ ♦ ♦ ║",
 		"║  ♦ ♦  ║",
@@ -529,8 +667,9 @@ def create_deck
 		)
 	deck << d8
 	d9 = Card.new(
-		"dimond",
+		"diamond",
 		9,
+		"nine of diamonds",
 		"║9      ║",
 		"║ ♦ ♦ ♦ ║",
 		"║ ♦ ♦ ♦ ║",
@@ -539,8 +678,9 @@ def create_deck
 		)
 	deck << d9
 	d10 = Card.new(
-		"dimond",
+		"diamond",
 		10,
+		"ten of diamonds",
 		"║10     ║",
 		"║♦ ♦ ♦ ♦║",
 		"║ ♦   ♦ ║",
@@ -549,8 +689,9 @@ def create_deck
 		)
 	deck << d10
 	dJ = Card.new(
-		"dimond",
+		"diamond",
 		11,
+		"jack of diamonds",
 		"║J      ║",
 		"║ A  ♦  ║",
 		"║   C   ║",
@@ -559,8 +700,9 @@ def create_deck
 		)
 	deck << dJ
 	dQ = Card.new(
-		"dimond",
+		"diamond",
 		12,
+		"queen of diamonds",
 		"║Q      ║",
 		"║ °\\♦/° ║",
 	    "║  |°|  ║",
@@ -569,8 +711,9 @@ def create_deck
 		)
 	deck << dQ
 	dK = Card.new(
-		"dimond",
+		"diamond",
 		13,
+		"king of diamonds",
 		"║K      ║",
 		"║ ♦ ♦ ♦ ║",
 		"║ |VVV| ║",
@@ -579,8 +722,9 @@ def create_deck
 		)
 	deck << dK
 	dA = Card.new(
-		"dimond",
+		"diamond",
 		14,
+		"ace of diamonds",
 		"║A♦     ║",
 		"║       ║",
 		"║   ♦   ║",
