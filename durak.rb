@@ -35,15 +35,10 @@ class Game
 		@ohand =[] #create empty array for player
 		@first = true #establish first turn as different 
 		@attacker = "" #designates player as either attacker or defender
+		
 		@inplay =[] #keeps track of cards in play
-		@attack = nil #set holder for attacing card
-		# @attack2 = nil
-		# @attack3 = nil
-		# @attack4 = nil
-		@defend = nil #set holder for defending card
-		# @defend1 = nil
-		# @defend1 = nil
-		# @defend1 = nil
+		@attack = [] #set holder for attacing cards
+		@defend = [] #set holder for defending cards
 
 		shuffle() #randomly order deck array
 	end
@@ -184,7 +179,7 @@ class Game
 
 	def pcards
 		pline1 = pline2 = pline3 = pline4 = pline5 = pline6 = pline7 = "" #initialze strings that will show oponent cards
-		
+
 		@phand.count.times{|x| pline1 += "  #{@phand[x].line1}"} #create player strings
 		@phand.count.times{|x| pline2 += "  #{@phand[x].line2}"}
 		@phand.count.times{|x| pline3 += "  #{@phand[x].line3}"}
@@ -193,10 +188,10 @@ class Game
 		@phand.count.times{|x| pline6 += "  #{@phand[x].line6}"}
 		@phand.count.times{|x| pline7 += "  #{@phand[x].line7}"}
 		
-		if @inplay.count != 0
+		if @attack.count != 0 #player can always take cards in play
 			pline7 += "    TAKE" 
 		end
-		if @inplay.count != 0 && @inplay.count%2 ==0
+		if @attack.count != 0 && @attack==@defend
 			pline7 += "  DISCARD"
 		end
 		puts "\n" #if card can be played shift it up 1 row
@@ -255,7 +250,7 @@ class Game
 				cardid  += "          #{x+1}" 
 				options = x+1 #increase with number of cards
 			end}
-		if @inplay.count != 0 #if player can take give them the option
+		if @attack.count != 0 #if player can take give them the option
 			options = @phand.count+1 #add a choice for take
 			cardid  += "          #{options}"
 		end
@@ -263,7 +258,7 @@ class Game
 		puts cardid
 		if @attacker == "opponent"
 			puts "Opponent attacks with #{@attack.name}, chose your defense."
-		elsif @inplay.count != 0 
+		elsif @attack.count != 0 
 			puts "Your opponent defendend with #{@defend.name}."
 			puts "You can take, transfer, or discard."
 		else
@@ -275,24 +270,21 @@ class Game
 			card = gets.chomp.to_i 
 			card -= 1 #get user input in a form that matches array index
 
-			if @inplay.count > 0 && card == options-1 #when player takes put all cards in play in player hand
-				p "called"
-				@phand += @inplay
-				@attack = nil
-				p @attack==nil
-				@defend = nil
-				p @defend==nil
-				@inplay =[]
+			if @attack.count > 0 && card == options-1 #when player takes put all cards in play in player hand
+				@phand += @attack #give player all attacking cards
+				@phand += @defend #give player all defending cards
+				@attack = [] #remove all attacking cards
+				@defend = [] #remove all defending cards
 				@attack = "opponent"
 				validinput = true
 				order()
 			elsif card.class != Fixnum || card > options || card < 0
-				if @inplay.count > 0
+				if @attack.count > 0
 					puts "Please choose a card with #{(1..@phand.count).to_a.join(", ")}, or take with #{options}."
 				else
 					puts "Please choose a card with #{(1..@phand.count-1).to_a.join(", ")}, or #{@phand.count}."
 				end
-			elsif @inplay.count !=0
+			elsif @attack.count !=0
 				if @phand[card].canplay == false
 					num = @attack.name.split #get the name of the card
 					num = num[0].to_s #only get the first part of the name
@@ -305,20 +297,18 @@ class Game
 		end
 
 		if @turn == "player"
-			@attack = @phand[card]
-			@inplay << @phand[card] 
-			@phand.delete_at(card)
+			@attack << @phand[card] #put attacking card in attacking array
+			@phand.delete_at(card) #remove card from player hand
 		else
-			@defend = @phand[card]
-			@inplay << @phand[card] 
-			@phand.delete_at(card)
+			@defend << @phand[card] #put defending card in defending array
+			@phand.delete_at(card) #remove card from player hand
 		end
 		setup()
 		opponentmove()
 	end
 
 	def playable
-		if @inplay.count == 0
+		if @attack.count == 0
 			@phand.each{|x| x.canplay = false} #if player is attacking first, they can play any card
 		else
 			@phand.each{|x| #go through player hand
@@ -329,7 +319,12 @@ class Game
 				else
 					x.canplay = false
 				end}
-			@inplay.each{|x|
+			@attack.each{|x| #check all attacking cards
+				@phand.each{|y|
+					if y.value == x.value #Players can 'transfer' if they can match the value of a card in play
+						y.canplay = true
+					end}
+			@defend.each{|x| #check all defending cards
 				@phand.each{|y|
 					if y.value == x.value #Players can 'transfer' if they can match the value of a card in play
 						y.canplay = true
@@ -345,18 +340,14 @@ class Game
 			@ohand.each{|x|
 				if x.suit == @attack.suit
 					if x.value > @attack.value
-						
-						@defend = x
-						
-						@inplay << x
+						@defend << x #put defending card in defending array
 					end
 				end}
 			if @defend == nil
 				@ohand.each{|x|
 				if x.suit == @trump.suit
 					if x.value < otrump
-						@defend = x
-						@inplay << x
+						@defend << x #put defending card in defending array
 					end
 				end}
 			end
