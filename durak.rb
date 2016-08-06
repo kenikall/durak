@@ -117,10 +117,9 @@ class Game
 		@phand = ordered
 	end
 
-	def setup
-		oline1 = oline2 = oline3 = oline4 = oline5 = oline6 = oline7 = "" #initialze strings that will show oponent cards  
-		pline1 = pline2 = pline3 = pline4 = pline5 = pline6 = pline7 = "" #initialze strings that will show oponent cards
-		
+	def ocards #show opponent cards
+		oline1 = oline2 = oline3 = oline4 = oline5 = oline6 = oline7 = "" #initialze strings that will show oponent cards 
+
 		@ohand.count.times{|x| oline1 += "  #{@ohand[x].b_line1}"} #fill opponent strings
 		@ohand.count.times{|x| oline2 += "  #{@ohand[x].b_line2}"}
 		@ohand.count.times{|x| oline3 += "  #{@ohand[x].b_line3}"}
@@ -135,7 +134,12 @@ class Game
 		puts "#{oline4}"
 		puts "#{oline5}"
 		puts "#{oline6}"
-		puts "#{oline7}"
+		puts "#{oline7}"	
+	end 
+
+	def setup #show cads in play 
+		
+		ocards() #show oponents hand 
 
 		if @attack == nil # display if no cards have been played
 			puts "\n"
@@ -174,6 +178,12 @@ class Game
 			puts "                 #{@defend.line6}"
 			puts "                 #{@defend.line7}"
 		end
+
+		pcards() #show players hand
+	end
+
+	def pcards
+		pline1 = pline2 = pline3 = pline4 = pline5 = pline6 = pline7 = "" #initialze strings that will show oponent cards
 		
 		@phand.count.times{|x| pline1 += "  #{@phand[x].line1}"} #create player strings
 		@phand.count.times{|x| pline2 += "  #{@phand[x].line2}"}
@@ -183,6 +193,12 @@ class Game
 		@phand.count.times{|x| pline6 += "  #{@phand[x].line6}"}
 		@phand.count.times{|x| pline7 += "  #{@phand[x].line7}"}
 		
+		if @inplay.count != 0
+			pline7 += "    TAKE" 
+		end
+		if @inplay.count != 0 && @inplay.count%2 ==0
+			pline7 += "  DISCARD"
+		end
 		puts "\n" #if card can be played shift it up 1 row
 		puts "#{pline1}" #display player cards face up
 		puts "#{pline2}"
@@ -191,8 +207,7 @@ class Game
 		puts "#{pline5}"
 		puts "#{pline6}"
 		puts "#{pline7}"
-	end
-
+	end 
 	def turn
 		if @first 
 			@first = false #run first turn 1 time
@@ -227,6 +242,7 @@ class Game
 	end
 
 	def playermove
+		options = 0 #player choices
 		playable() #identify playable cards
 
 		setup() #show game table with playable cards highlighted
@@ -234,14 +250,24 @@ class Game
 		@phand.count.times{|x| #put numbers under player cards
 			if x==0
 				cardid  += "#{x+1}"
+				options = x+1 #set player choice numbers
 			else
 				cardid  += "          #{x+1}" 
+				options = x+1 #increase with number of cards
 			end}
+		if @inplay.count != 0 #if player can take give them the option
+			options = @phand.count+1 #add a choice for take
+			cardid  += "          #{options}"
+		end
+
 		puts cardid
 		if @attacker == "opponent"
 			puts "Opponent attacks with #{@attack.name}, chose your defense."
+		elsif @inplay.count != 0 
+			puts "Your opponent defendend with #{@defend.name}."
+			puts "You can take, transfer, or discard."
 		else
-			puts "You are attaking. pick a card."
+			puts "You are the attacker. Choose a card."
 		end  
 
 		validinput = false #verify input
@@ -249,8 +275,23 @@ class Game
 			card = gets.chomp.to_i 
 			card -= 1 #get user input in a form that matches array index
 
-			if card.class != Fixnum || card > @phand.count-1 || card < 0
-				puts "Please choose #{(1..@phand.count-1).to_a.join(", ")}, or #{@phand.count}."
+			if @inplay.count > 0 && card == options-1 #when player takes put all cards in play in player hand
+				p "called"
+				@phand += @inplay
+				@attack = nil
+				p @attack==nil
+				@defend = nil
+				p @defend==nil
+				@inplay =[]
+				@attack = "opponent"
+				validinput = true
+				order()
+			elsif card.class != Fixnum || card > options || card < 0
+				if @inplay.count > 0
+					puts "Please choose a card with #{(1..@phand.count).to_a.join(", ")}, or take with #{options}."
+				else
+					puts "Please choose a card with #{(1..@phand.count-1).to_a.join(", ")}, or #{@phand.count}."
+				end
 			elsif @inplay.count !=0
 				if @phand[card].canplay == false
 					num = @attack.name.split #get the name of the card
@@ -264,10 +305,12 @@ class Game
 		end
 
 		if @turn == "player"
-			@attack = @phand[card] 
+			@attack = @phand[card]
+			@inplay << @phand[card] 
 			@phand.delete_at(card)
 		else
 			@defend = @phand[card]
+			@inplay << @phand[card] 
 			@phand.delete_at(card)
 		end
 		setup()
@@ -281,10 +324,8 @@ class Game
 			@phand.each{|x| #go through player hand
 				if x.suit == @trump.suit #player can always trump
 					x.canplay = true
-					p "#{x.name} because trump."
 				elsif (x.suit == @attack.suit && x.value>@attack.value) #player can play a higher card of the same suit
 					x.canplay = true
-					p "#{x.name} because higher value, same suit."
 				else
 					x.canplay = false
 				end}
@@ -292,7 +333,6 @@ class Game
 				@phand.each{|y|
 					if y.value == x.value #Players can 'transfer' if they can match the value of a card in play
 						y.canplay = true
-						p "#{y.name} because transfer."
 					end}
 			}
 		end
@@ -305,8 +345,9 @@ class Game
 			@ohand.each{|x|
 				if x.suit == @attack.suit
 					if x.value > @attack.value
+						
 						@defend = x
-						card = x
+						
 						@inplay << x
 					end
 				end}
@@ -322,7 +363,12 @@ class Game
 
 			if @defend == nil
 				puts "The opponent takes."
-				@phand += @inplay
+				@ohand += @inplay
+				@attack = nil
+				p @attack
+				@defend = nil
+				@inplay =[]
+				@attack = "player"
 			else 
 			 	@ohand.delete(@defend)
 			end
