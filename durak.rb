@@ -172,14 +172,27 @@ class Game
 		@attack.count.times{|x| 
 			if @defend.count >= x && @defend[x] != nil
 				inplay8 += "  #{@defend[x].line6}"
+			else
+				inplay8 += "           "
 			end}
 		@attack.count.times{|x| 
 			if @defend.count >= x && @defend[x] != nil
 				inplay9 += "  #{@defend[x].line7}"
+			else
+				inplay9 += "           "
 			end}
 		
-		spaces = "                   "
-		count_space = "         "
+		
+		if @attack.count == 0
+			spaces = "                              "
+		elsif @attack.count == 1
+			spaces = "                   "
+		elsif @attack.count == 2
+			spaces = "        "
+		else
+			spaces = "    "
+		end 
+
 		if @deck.count > 0
 			inplay0 += "#{spaces}           T R U M P"
 			inplay1 += "#{spaces}#{@deck[0].b_line1}  #{@deck[-1].line1}" #show bottom card as trump
@@ -189,7 +202,7 @@ class Game
 			inplay5 += "#{spaces}#{@deck[0].b_line5}  #{@deck[-1].line5}"
 			inplay6 += "#{spaces}#{@deck[0].b_line6}  #{@deck[-1].line6}"
 			inplay7 += "#{spaces}#{@deck[0].b_line7}  #{@deck[-1].line7}"
-			inplay8 += "#{count_space*@attack.count}                                  #{@deck.count}" #shows cards remaining in deck
+			inplay8 += "#{spaces}    #{@deck.count}" #shows cards remaining in deck
 		else
 			inplay0 += "#{spaces}           T R U M P"
 			if @trump.suit == "heart" 
@@ -216,6 +229,10 @@ class Game
 		puts "#{inplay9}"
 
 		pcards() #show players hand
+
+		if @phand.count == 0 || @ohand.count == 0
+			end_game()
+		end
 	end
 
 	def pcards
