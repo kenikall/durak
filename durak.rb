@@ -34,9 +34,9 @@ class Game
 		@phand =[] #create empty array for player
 		@ohand =[] #create empty array for player
 		@first = true #establish first turn as different 
-		@attacker = "" #designates player as either attacker or defender
+		@attacker = "" #designates player or opponent as attacker
+		@initial = true #sets up initial attack
 		
-		@inplay =[] #keeps track of cards in play
 		@attack = [] #set holder for attacing cards
 		@defend = [] #set holder for defending cards
 
@@ -135,44 +135,113 @@ class Game
 	def setup #show cads in play 
 		
 		ocards() #show oponents hand 
+#put dynamic spacing here "                 "
+		inplay0 = inplay1 = inplay2 = inplay3 = inplay4 = inplay5 = inplay6 = inplay7 = inplay8 = inplay9 ="        " #initilize lines for cards in play
 
-		if @attack == nil # display if no cards have been played
-			puts "\n"
-			puts "                                                        T R U M P"
-			puts "                                             #{@deck[0].b_line1}  #{@deck[-1].line1}" #show bottom card as trump
-			puts "                                             #{@deck[0].b_line2}  #{@deck[-1].line2}"
-			puts "                                             #{@deck[0].b_line3}  #{@deck[-1].line3}"
-			puts "                                             #{@deck[0].b_line4}  #{@deck[-1].line4}"
-			puts "                                             #{@deck[0].b_line5}  #{@deck[-1].line5}"
-			puts "                                             #{@deck[0].b_line6}  #{@deck[-1].line6}"
-			puts "                                             #{@deck[0].b_line7}  #{@deck[-1].line7}"
-			puts "\n"
-			puts "\n"
-		elsif @defend == nil #display if 1 card has been played
-			puts "\n"
-			puts "                 #{@attack.line1}                              T R U M P"
-			puts "                 #{@attack.line2}                   #{@deck[0].b_line1}  #{@deck[-1].line1}"
-			puts "                 #{@attack.line3}                   #{@deck[0].b_line2}  #{@deck[-1].line2}"
-			puts "                 #{@attack.line4}                   #{@deck[0].b_line3}  #{@deck[-1].line3}"
-			puts "                 #{@attack.line5}                   #{@deck[0].b_line4}  #{@deck[-1].line4}"
-			puts "                 #{@attack.line6}                   #{@deck[0].b_line5}  #{@deck[-1].line5}"
-			puts "                 #{@attack.line7}                   #{@deck[0].b_line6}  #{@deck[-1].line6}"
-			puts "                                             #{@deck[0].b_line7}  #{@deck[-1].line7}"
-			puts "\n"
-			puts "\n"
-		else #display if 2 cards have been played
-			puts "\n"
-			puts "                 #{@attack.line1}                              T R U M P"
-			puts "                 #{@attack.line2}                   #{@deck[0].b_line1}  #{@deck[-1].line1}"
-			puts "                 #{@attack.line3}                   #{@deck[0].b_line2}  #{@deck[-1].line2}"
-			puts "                 #{@defend.line1}                   #{@deck[0].b_line3}  #{@deck[-1].line3}"
-			puts "                 #{@defend.line2}                   #{@deck[0].b_line4}  #{@deck[-1].line4}"
-			puts "                 #{@defend.line3}                   #{@deck[0].b_line5}  #{@deck[-1].line5}"
-			puts "                 #{@defend.line4}                   #{@deck[0].b_line6}  #{@deck[-1].line6}"
-			puts "                 #{@defend.line5}                   #{@deck[0].b_line7}  #{@deck[-1].line7}"
-			puts "                 #{@defend.line6}"
-			puts "                 #{@defend.line7}"
+		@attack.count.times{|x| inplay0 += "  #{@attack[x].line1}"} #make a string of attacking cards in play
+		@attack.count.times{|x| inplay1 += "  #{@attack[x].line2}"}
+		@attack.count.times{|x| inplay2 += "  #{@attack[x].line3}"}
+		@attack.count.times{|x| 
+			if @defend.count >= x && @defend.count != 0
+				inplay3 += "  #{@defend[x].line1}" 
+			else
+				inplay3 += "  #{@attack[x].line4}"
+			end}	
+		@attack.count.times{|x| 
+			if @defend.count >= x && @defend.count != 0
+				inplay4 += "  #{@defend[x].line2}" 
+			else
+				inplay4 += "  #{@attack[x].line5}"
+			end}
+		@attack.count.times{|x| 
+			if @defend.count >= x && @defend.count != 0
+				inplay5 += "  #{@defend[x].line3}" #covers attacking card with defending card
+			else
+				inplay5 += "  #{@attack[x].line6}"
+			end}
+		@attack.count.times{|x| 
+			if @defend.count >= x && @defend.count != 0
+				inplay6 += "  #{@defend[x].line4}"
+			else
+				inplay6 += "  #{@attack[x].line7}"
+			end}
+		@attack.count.times{|x|
+			if @defend.count >= x && @defend.count != 0
+				inplay7 += "  #{@defend[x].line5}"
+			else
+				inplay7 += "           "
+			end}
+		@attack.count.times{|x| 
+			if @defend.count >= x && @defend.count != 0
+				inplay8 += "  #{@defend[x].line6}"
+			end}
+		@attack.count.times{|x| 
+			if @defend.count >= x && @defend.count != 0
+				inplay9 += "  #{@defend[x].line7}"
+			end}
+		
+		spaces = "                   "
+		inplay0 += "#{spaces}           T R U M P"
+		inplay1 += "#{spaces}#{@deck[0].b_line1}  #{@deck[-1].line1}" #show bottom card as trump
+		inplay2 += "#{spaces}#{@deck[0].b_line2}  #{@deck[-1].line2}"
+		inplay3 += "#{spaces}#{@deck[0].b_line3}  #{@deck[-1].line3}"
+		inplay4 += "#{spaces}#{@deck[0].b_line4}  #{@deck[-1].line4}"
+		inplay5 += "#{spaces}#{@deck[0].b_line5}  #{@deck[-1].line5}"
+		inplay6 += "#{spaces}#{@deck[0].b_line6}  #{@deck[-1].line6}"
+		inplay7 += "#{spaces}#{@deck[0].b_line7}  #{@deck[-1].line7}"
+		if @deck.count != 0 
+			inplay8 += "#{spaces}     #{@deck.count}" #shows cards remaining in deck
 		end
+
+		puts "#{inplay0}" # display cards in play
+		puts "#{inplay1}"
+		puts "#{inplay2}"
+		puts "#{inplay3}"
+		puts "#{inplay4}"
+		puts "#{inplay5}"
+		puts "#{inplay6}"
+		puts "#{inplay7}"
+		puts "#{inplay8}"
+		puts "#{inplay9}"
+
+# 		if @attack.count == 0 # display if no cards have been played
+# 			puts "\n"
+# 			puts "                                                        T R U M P"
+# 			puts "                                             #{@deck[0].b_line1}  #{@deck[-1].line1}" #show bottom card as trump
+# 			puts "                                             #{@deck[0].b_line2}  #{@deck[-1].line2}"
+# 			puts "                                             #{@deck[0].b_line3}  #{@deck[-1].line3}"
+# 			puts "                                             #{@deck[0].b_line4}  #{@deck[-1].line4}"
+# 			puts "                                             #{@deck[0].b_line5}  #{@deck[-1].line5}"
+# 			puts "                                             #{@deck[0].b_line6}  #{@deck[-1].line6}"
+# 			puts "                                             #{@deck[0].b_line7}  #{@deck[-1].line7}"
+# 			puts "\n"
+# 			puts "\n"
+# #make a string for defending cards below needs to be rewritten
+# 		elsif @defend.count == 0 #display if 1 card has been played
+# 			puts "\n"
+# 			puts "                 #{@attack.line1}                              T R U M P"
+# 			puts "                 #{@attack.line2}                   #{@deck[0].b_line1}  #{@deck[-1].line1}"
+# 			puts "                 #{@attack.line3}                   #{@deck[0].b_line2}  #{@deck[-1].line2}"
+# 			puts "                 #{@attack.line4}                   #{@deck[0].b_line3}  #{@deck[-1].line3}"
+# 			puts "                 #{@attack.line5}                   #{@deck[0].b_line4}  #{@deck[-1].line4}"
+# 			puts "                 #{@attack.line6}                   #{@deck[0].b_line5}  #{@deck[-1].line5}"
+# 			puts "                 #{@attack.line7}                   #{@deck[0].b_line6}  #{@deck[-1].line6}"
+# 			puts "                                             #{@deck[0].b_line7}  #{@deck[-1].line7}"
+# 			puts "\n"
+# 			puts "\n"
+# 		else #display if 2 cards have been played
+# 			puts "\n"
+# 			puts "                 #{@attack.line1}                              T R U M P"
+# 			puts "                 #{@attack.line2}                   #{@deck[0].b_line1}  #{@deck[-1].line1}"
+# 			puts "                 #{@attack.line3}                   #{@deck[0].b_line2}  #{@deck[-1].line2}"
+# 			puts "                 #{@defend.line1}                   #{@deck[0].b_line3}  #{@deck[-1].line3}"
+# 			puts "                 #{@defend.line2}                   #{@deck[0].b_line4}  #{@deck[-1].line4}"
+# 			puts "                 #{@defend.line3}                   #{@deck[0].b_line5}  #{@deck[-1].line5}"
+# 			puts "                 #{@defend.line4}                   #{@deck[0].b_line6}  #{@deck[-1].line6}"
+# 			puts "                 #{@defend.line5}                   #{@deck[0].b_line7}  #{@deck[-1].line7}"
+# 			puts "                 #{@defend.line6}"
+# 			puts "                 #{@defend.line7}"
+# 		end
 
 		pcards() #show players hand
 	end
@@ -191,7 +260,7 @@ class Game
 		if @attack.count != 0 #player can always take cards in play
 			pline7 += "    TAKE" 
 		end
-		if @attack.count != 0 && @attack==@defend
+		if @attack.count != 0 && @attack.count==@defend.count
 			pline7 += "  DISCARD"
 		end
 		puts "\n" #if card can be played shift it up 1 row
@@ -203,7 +272,8 @@ class Game
 		puts "#{pline6}"
 		puts "#{pline7}"
 	end 
-	def turn
+
+	def turn #determines if player or opponent go first
 		if @first 
 			@first = false #run first turn 1 time
 			
@@ -225,16 +295,93 @@ class Game
 					end
 				end}
 			if ptrump < otrump #prompt either player or opponent to go first
-				@turn = "player"
 				@attacker = "player"
-				playermove()
 			else
-				@turn = "opponent"
 				@attacker = "opponent"
-				opponentmove()
 			end
 		end
+		launch_atk()
 	end
+#TURN LOGIC
+	def launch_atk #attacker plays card
+		setup()
+		if @attacker == "player"
+			options = 0 #player choices
+			cardid = "      " #empty sring to identify cards for the user
+			
+			@phand.count.times{|x| #put numbers under player cards
+				if x==0
+					cardid  += "#{x+1}"
+					options = x+1 #set player choice numbers
+				else
+					cardid  += "          #{x+1}" 
+					options = x+1 #increase with number of cards
+				end}
+			puts cardid
+			puts "You are the attacker. Choose a card."
+
+			validinput = false #verify input
+			until validinput
+				card = gets.chomp.to_i 
+				card -= 1 #get user input in a form that matches array index
+
+				if card.class != Fixnum || card > options || card < 0 #define valid input
+					puts "Please choose a card with #{(1..@phand.count-1).to_a.join(", ")}, or #{@phand.count}."#give player feedback
+				else
+					validinput = true
+				end
+			end
+			@attack << @phand[card] #put attacking card in attacking array
+			@phand.delete_at(card) #remove card from player hand
+		else
+			num = 20 #set arbitraty high number for comparison
+			temp = nil #place holder for opponent's card
+			
+			alltrump = true #check to see if all oponent's cards are trump
+			@ohand.each{|y|
+				if y.suit != @trump.suit
+					alltrump = false
+				end}
+			
+			@ohand.each{|x| #search opponent hand for appropriate card
+				if alltrump #if opponent only has trum, they will play trump
+					if x.value < num
+						temp = x
+					end
+				elsif x.suit != @trump.suit #opponent will try not to lead with somthing other than trump
+					if x.value < num
+						temp = x
+					end
+				end}
+			@attack << temp
+			puts "Opponent attacks with #{temp.name}."
+			@ohand.delete(temp)
+		end
+		setup()
+		mount_def()
+	end
+ 
+	def mount_def()
+		puts "Attacking works!!! Yay!!!"
+	end
+
+#D 1. Take, 2. Defend 3. Transfer #set initial attack to false
+#D 1. Take all cards in play get added to defender's hand #attacker stays attacker
+#D 2. Defender plays a trump or higher card of attacking card's suit #attacker can throw in
+#D 3. Defender throws card with same value as attack. #Defender becomes attacker
+
+#THROWING IN
+#A 1. Attacker discards cards in play 2. Attacker throws a card matching any of the cards in play 
+#A 1. Defender becomes attacker, discard cards in play, end turn
+#A 2. Add card to attack, defender defends
+
+#DEFENDING THROW IN 
+#D 1. Take, 2. Defend 
+#D 1. Take all cards in play get added to defender's hand #attacker stays attacker
+#D 2. Defender plays a trump or higher card of attacking card's suit #attacker can throw in
+
+#END TURN
+# If there are cars in the deck make sure attacker and defender each have 6 cards 
 
 	def playermove
 		options = 0 #player choices
@@ -259,7 +406,7 @@ class Game
 		if @attacker == "opponent"
 			puts "Opponent attacks with #{@attack.name}, chose your defense."
 		elsif @attack.count != 0 
-			puts "Your opponent defendend with #{@defend.name}."
+			puts "Your opponent defendend with #{@defend[0].name}."
 			puts "You can take, transfer, or discard."
 		else
 			puts "You are the attacker. Choose a card."
@@ -314,7 +461,8 @@ class Game
 			@phand.each{|x| #go through player hand
 				if x.suit == @trump.suit #player can always trump
 					x.canplay = true
-				elsif (x.suit == @attack.suit && x.value>@attack.value) #player can play a higher card of the same suit
+#below won't work. need to point to a specific card in attack array
+				elsif (x.suit == @attack[0].suit && x.value>@attack[0].value) #player can play a higher card of the same suit
 					x.canplay = true
 				else
 					x.canplay = false
@@ -323,56 +471,57 @@ class Game
 				@phand.each{|y|
 					if y.value == x.value #Players can 'transfer' if they can match the value of a card in play
 						y.canplay = true
-					end}
+					end}}
 			@defend.each{|x| #check all defending cards
 				@phand.each{|y|
 					if y.value == x.value #Players can 'transfer' if they can match the value of a card in play
 						y.canplay = true
-					end}
-			}
+					end}}
 		end
 	end
 
 	def opponentmove
 		otrump = 20
 		if @turn == "player"
-			@defend = nil
-			@ohand.each{|x|
-				if x.suit == @attack.suit
-					if x.value > @attack.value
+			@defend = []
+			@ohand.each{|x| #search through all cards in hand 
+#below won't work. need to point to a specific card in attack array
+				if x.suit == @attack[0].suit
+					if x.value > @attack[0].value
 						@defend << x #put defending card in defending array
 					end
 				end}
-			if @defend == nil
+			@ohand.each{|x|
+			if @defend.count == 0
 				@ohand.each{|x|
 				if x.suit == @trump.suit
 					if x.value < otrump
 						@defend << x #put defending card in defending array
 					end
 				end}
-			end
+			end}
 
-			if @defend == nil
+			if @defend.count == 0
 				puts "The opponent takes."
-				@ohand += @inplay
-				@attack = nil
-				p @attack
-				@defend = nil
-				@inplay =[]
-				@attack = "player"
+				@ohand += @attack #add all attacking cards to oponent's hand
+				@ohand += @defend #add all defending cards to oponent's hand
+				@attack = [] #clear attack array
+				@defend = [] #clear defending array
+				@attacker = "player" #player becomes the attacker
 			else 
-			 	@ohand.delete(@defend)
+			 	@ohand.delete(@defend[@defend.count-1]) #remove the card just played from the oponent's hand
 			end
 		else
 			num = 20
+			temp = nil
 			@ohand.each{|x| 
 				if x.suit != @trump.suit
 					if x.value < num
-						@attack = x
+						temp = x
 					end
 				end}
-			@ohand.delete(@attack)
-			@inplay << @attack
+			@attack << temp
+			@ohand.delete(@attack[@attack.count-1])
 		end
 		playermove()
 	end
