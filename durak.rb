@@ -336,6 +336,8 @@ class Game
 		elsif @ohand.count == 0
 			abort("Oh No! You are the DURAK!")
 		end
+		puts "Reach out at kenikall@gmail.com to let me know what you think."
+		puts "Follow me on Twitter: @MannahKallon"
 		exit 
 	end
 
