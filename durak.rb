@@ -35,7 +35,6 @@ class Game
 		@ohand =[] #create empty array for player
 		@first = true #establish first turn as different 
 		@attacker = "" #designates player or opponent as attacker
-		@initial = true #sets up initial attack
 		
 		@attack = [] #set holder for attacing cards
 		@defend = [] #set holder for defending cards
@@ -191,6 +190,18 @@ class Game
 			inplay6 += "#{spaces}#{@deck[0].b_line6}  #{@deck[-1].line6}"
 			inplay7 += "#{spaces}#{@deck[0].b_line7}  #{@deck[-1].line7}"
 			inplay8 += "#{count_space*@attack.count}                                  #{@deck.count}" #shows cards remaining in deck
+		else
+			inplay0 += "#{spaces}           T R U M P"
+			if @trump.suit == "heart" 
+				inplay1 += "#{spaces}               ♥"
+			elsif @trump.suit == "spade" 
+				inplay1 += "#{spaces}               ♠"
+			elsif @trump.suit == "diamond" 
+				inplay1 += "#{spaces}               ♦"
+			elsif @trump.suit == "club"
+				inplay1 += "#{spaces}               ♣"
+			end
+					
 		end
 
 		puts "#{inplay0}" # display cards in play
@@ -301,8 +312,22 @@ class Game
 		setup()
 		launch_atk()
 	end
+
+	def end_game
+		if @phand.count == 0
+			abort("Congratulations!! You Won!!")
+		elsif @ohand.count == 0
+			abort("Oh No! You are the DURAK!")
+		end
+		exit 
+	end
+
 #TURN LOGIC
 	def launch_atk #attacker plays card
+		if @phand.count == 0 || @ohand.count == 0
+			end_game()
+		end
+
 		if @attacker == "player"
 			options = 0 #player choices
 			cardid = "      " #empty sring to identify cards for the user
@@ -373,6 +398,7 @@ class Game
 					@attack << transfer
 					@ohand.delete(transfer)
 					setup() #show game space
+					@attacker = "opponent"
 					puts "The opponent transfered the attack. You must now defend."
 					def_transfer()
 				end
@@ -393,7 +419,7 @@ class Game
 			@defend = [] #remove all defending cards
 			@attacker = "player" #switch attacker
 			setup() #show game space
-			puts "The opponenet takes. You are the attacker."
+			puts "The opponent takes."
 			end_turn() #player attacks
 		else
 			cantransfer = false #only let players transfer under certian conditions
@@ -405,8 +431,7 @@ class Game
 					choices << x
 				end}
 			
-			puts "Opponent attacks with #{@attack[-1].name}."
-			if @initial #can only transfer on initial attack
+			if @defend.count == 0 #can only transfer on initial attack
 				@phand.each{|x|
 					if x.value == @attack[0].value
 						cantransfer = true
@@ -445,17 +470,17 @@ class Game
 				setup() #show game space
 				puts "All of the cards in play were added to your hand."
 				end_turn()
-			elsif choices[card-1].value == @attack[-1].value && @initial#transfer
+			elsif choices[card-1].value == @attack[-1].value && @defend.count == 0
 				@attack << choices[card-1] # put card in play
 				@attacker = "player" #make player attacker
 				@phand.delete(choices[card-1]) #remove card from player hand
 				setup() #show game space
+				puts "You transfered to your opponent."
 				def_transfer()
 			else
 				@defend << choices[card-1] #cover attacking card with defending card
 				@phand.delete(choices[card-1]) #remove card from player hand
 				setup() #show game space
-				@initial = false #transfering not allowed
 				puts "You defended with a #{choices[card-1].name}."
 				throwing_in()
 			end
@@ -502,6 +527,7 @@ class Game
 			end
 
 			if card == choices.count+1
+				@attacker = "opponent"
 				end_turn()
 			else
 				@attack << choices[card-1] #put attacking card in attacking array
@@ -524,18 +550,80 @@ class Game
 						puts "Your opponent throws in a #{x.name}"
 						mount_def()
 					end}}
+			puts "You opponent discards the cards in play."
+			@attacker = "player"
 			end_turn()
 		end
 	end
 
 	def def_transfer
-		puts "I'll get here eventually"
+
+		if @attacker == "player"
+			@attack.each{|transattack|
+					@ohand.each{|x| #go through opponent hand
+					if transattack.suit == @trump.suit && x.suit == @trump.suit && x.value > transattack.value
+						@defend << x #put def card in defending array
+				    	@ohand.delete(x) #remove card from player hand
+					elsif x.suit == @trump.suit && transattack.suit != @trump.suit #player can always trump any non trump
+						@defend << x #put def card in defending array
+				    	@ohand.delete(x) #remove card from player hand
+					elsif x.suit == transattack.suit && x.value > transattack.value #player can play a higher card of the same suit
+						@defend << x #put def card in defending array
+				    	@ohand.delete(x) #remove card from player hand
+					end}}
+			if @attack.count == @defend.count
+				throwing_in()
+			else
+				puts "Your opponent can't play and takes the cards."
+				@ohand += @attack
+				@ohand += @defend
+				end_turn()
+			end 
+		else
+			@attack.each{|transattack|
+				@phand.each{|x| x.canplay = false} #reset all cards to unplayable
+				@phand.each{|x| #go through player hand
+					if transattack.suit == @trump.suit && x.suit == @trump.suit && x.value > transattack.value
+						x.canplay = true
+					elsif x.suit == @trump.suit && transattack.suit != @trump.suit #player can always trump any non trump
+						x.canplay = true
+					elsif x.suit == transattack.suit && x.value > transattack.value #player can play a higher card of the same suit
+						x.canplay = true
+					end}
+				choices = [] #array for playable cards
+				@phand.each{|x| #fill array with playable cards
+					if x.canplay
+						choices << x
+					end}
+				setup() #show game space
+				puts "You can defend the #{transattack.name} or push #{choices.count+1} to take"
+				validinput = false #verify input
+				until validinput
+					card = gets.chomp.to_i 
+
+					if card.class != Fixnum || card > choices.count+1 || card < 0 #define valid input
+						puts "Please choose a card with #{(1..choices.count).to_a.join(", ")}, or #{choices.count + 1} to end the turn."#give player feedback
+					else
+						validinput = true
+					end
+				end
+
+				if card == choices.count+1
+					@phand += @attack
+					@phand += @defend
+					end_turn()
+				else
+					@defend << choices[card-1] #put def card in defending array
+				    @phand.delete(choices[card-1]) #remove card from player hand
+				end}
+			throwing_in()
+		end
 	end
 
 	def end_turn
 		@phand.each{|x| x.canplay = false} #reset all cards to unplayable
-		attack = [] #clear cards in play
-		defend = []
+		@attack = [] #clear cards in play
+		@defend = []
 		until (@phand.count >= 6 && @ohand.count >=6) || @deck.count <=0
 			if @phand.count < 6
 				@phand << @deck.shift
@@ -571,7 +659,7 @@ class Game
 				x.canplay = true
 			elsif x.suit == @attack[-1].suit && x.value > @attack[-1].value #player can play a higher card of the same suit
 				x.canplay = true
-			elsif x.value == @attack[-1].value && @initial
+			elsif x.value == @attack[-1].value && @defend.count == 0
 				x.canplay = true
 			else
 				x.canplay = false
