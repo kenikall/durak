@@ -25,7 +25,7 @@ class Card # make card
 		@line5 = line5
 		@line6 = line6
 		@line7 = b_line7
-	end 
+	end
 end
 
 class Game
@@ -33,31 +33,32 @@ class Game
 		@deck = create_deck #create array of 32 cards
 		@phand =[] #create empty array for player
 		@ohand =[] #create empty array for player
-		@first = true #establish first turn as different 
+		@first = true #establish first turn as different
 		@attacker = "" #designates player or opponent as attacker
-		
+
 		@attack = [] #set holder for attacing cards
 		@defend = [] #set holder for defending cards
 
 		shuffle() #randomly order deck array
 	end
-	
+
 	def shuffle #randomly order deck array
-		@deck.length.times{|x| #get location of cards in order
+		@deck.length.times do |x| #get location of cards in order
 			location = rand(@deck.length) #get place of random card
 			temp = @deck[location] #hold random card
 			@deck[location] = @deck[x] #put random card in current location
 			@deck[x] = temp #put card from current location in random location
-		}
-		
+		end
+
 		deal() #fill player and opponent arrays
 	end
-	
+
 	def deal
-		6.times{ #give each player 6 cards from the top of the deck
+		6.times do #give each player 6 cards from the top of the deck
 			@phand << @deck.shift #put next card in player hand
-			@ohand << @deck.shift #put next card in opponet hand
-		}
+			@ohand << @deck.shift #put next card in opponent hand
+		end
+
 		@trump = @deck[-1] #set trump to suit of bottom card
 		order() #put player cards in order of value
 		turn() #determine who goes first
@@ -70,22 +71,23 @@ class Game
 		heart_ary = [] #empty array for hearts
 		spade_ary = [] #empty array for spades
 
-		@phand.each{|x|
+		@phand.each do |x|
 			if x.suit == "club" #identify clubs
 				club_ary << x #put all clubs into club array
-			elsif x.suit == "diamond" #identify diamonsd
+			elsif x.suit == "diamond" #identify diamonds
 				diamond_ary << x #put all diamonds into diamond array
-			elsif x.suit == "heart" #identify heartss
+			elsif x.suit == "heart" #identify hearts
 				heart_ary << x #put all hearts into heart array
 			elsif x.suit == "spade" #identify spades
 				spade_ary << x #put all spades into spade array
-			end}
+			end
+		end
 
 		club_ary = club_ary.sort_by{|x| x.value}.reverse #sort clubs by card value
 		diamond_ary = diamond_ary.sort_by{|x| x.value}.reverse #sort diamonds by card value
-		heart_ary = heart_ary.sort_by{|x| x.value}.reverse #sort heartss by card value
+		heart_ary = heart_ary.sort_by{|x| x.value}.reverse #sort hearts by card value
 		spade_ary = spade_ary.sort_by{|x| x.value}.reverse #sort spades by card value
-		
+
 		if @trump.suit == "club" #if #trump is club put clubs first
 			club_ary.each{|x| ordered << x}
 			diamond_ary.each{|x| ordered << x}
@@ -112,7 +114,7 @@ class Game
 	end
 
 	def ocards #show opponent cards
-		oline1 = oline2 = oline3 = oline4 = oline5 = oline6 = oline7 = "" #initialze strings that will show oponent cards 
+		oline1 = oline2 = oline3 = oline4 = oline5 = oline6 = oline7 = "" #initialize strings that will show opponent cards
 
 		@ohand.count.times{|x| oline1 += "  #{@ohand[x].b_line1}"} #fill opponent strings
 		@ohand.count.times{|x| oline2 += "  #{@ohand[x].b_line2}"}
@@ -121,68 +123,34 @@ class Game
 		@ohand.count.times{|x| oline5 += "  #{@ohand[x].b_line5}"}
 		@ohand.count.times{|x| oline6 += "  #{@ohand[x].b_line6}"}
 		@ohand.count.times{|x| oline7 += "  #{@ohand[x].b_line7}"}
-		
+
 		puts "#{oline1}" #display opponent cards face down
 		puts "#{oline2}"
 		puts "#{oline3}"
 		puts "#{oline4}"
 		puts "#{oline5}"
 		puts "#{oline6}"
-		puts "#{oline7}"	
-	end 
+		puts "#{oline7}"
+	end
 
-	def setup #show cads in play 
-		ocards() #show oponents hand 
-#put dynamic spacing here "                 "
-		inplay0 = inplay1 = inplay2 = inplay3 = inplay4 = inplay5 = inplay6 = inplay7 = inplay8 = inplay9 ="        " #initilize lines for cards in play
+	def setup #show cads in play
+		ocards() #show opponents hand
+		inplay0 = inplay1 = inplay2 = inplay3 = inplay4 = inplay5 = inplay6 = inplay7 = inplay8 = inplay9 ="        " #initialize lines for cards in play
+		spaces = "           "
+		@attack.count.times do |x|
+			inplay0 += "  #{@attack[x].line1}" #make a string of attacking cards in play
+			inplay1 += "  #{@attack[x].line2}"
+			inplay2 += "  #{@attack[x].line3}"
 
-		@attack.count.times{|x| inplay0 += "  #{@attack[x].line1}"} #make a string of attacking cards in play
-		@attack.count.times{|x| inplay1 += "  #{@attack[x].line2}"}
-		@attack.count.times{|x| inplay2 += "  #{@attack[x].line3}"}
-		@attack.count.times{|x| 
-			if @defend.count >= x && @defend[x] != nil
-				inplay3 += "  #{@defend[x].line1}" 
-			else
-				inplay3 += "  #{@attack[x].line4}"
-			end}	
-		@attack.count.times{|x| 
-			if @defend.count >= x && @defend[x] != nil
-				inplay4 += "  #{@defend[x].line2}" 
-			else
-				inplay4 += "  #{@attack[x].line5}"
-			end}
-		@attack.count.times{|x| 
-			if @defend.count >= x && @defend[x] != nil
-				inplay5 += "  #{@defend[x].line3}" #covers attacking card with defending card
-			else
-				inplay5 += "  #{@attack[x].line6}"
-			end}
-		@attack.count.times{|x| 
-			if @defend.count >= x && @defend[x] != nil
-				inplay6 += "  #{@defend[x].line4}"
-			else
-				inplay6 += "  #{@attack[x].line7}"
-			end}
-		@attack.count.times{|x|
-			if @defend.count >= x && @defend[x] != nil
-				inplay7 += "  #{@defend[x].line5}"
-			else
-				inplay7 += "           "
-			end}
-		@attack.count.times{|x| 
-			if @defend.count >= x && @defend[x] != nil
-				inplay8 += "  #{@defend[x].line6}"
-			else
-				inplay8 += "           "
-			end}
-		@attack.count.times{|x| 
-			if @defend.count >= x && @defend[x] != nil
-				inplay9 += "  #{@defend[x].line7}"
-			else
-				inplay9 += "           "
-			end}
-		
-		
+			inplay3 += (@defend.count >= x && @defend[x] != nil) ? "  #{@defend[x].line1}" :"  #{@attack[x].line4}"
+			inplay4 += (@defend.count >= x && @defend[x] != nil) ? "  #{@defend[x].line2}" : "  #{@attack[x].line5}"
+			inplay5 += (@defend.count >= x && @defend[x] != nil) ? "  #{@defend[x].line3}" : "  #{@attack[x].line6}"
+			inplay6 += (@defend.count >= x && @defend[x] != nil) ? "  #{@defend[x].line4}" : "  #{@attack[x].line7}"
+			inplay7 += (@defend.count >= x && @defend[x] != nil) ? "  #{@defend[x].line5}" : spaces
+			inplay8 += (@defend.count >= x && @defend[x] != nil) ? "  #{@defend[x].line6}" : spaces
+			inplay9 += (@defend.count >= x && @defend[x] != nil) ? "  #{@defend[x].line7}" : spaces
+		end
+
 		if @attack.count == 0
 			spaces = "                              "
 		elsif @attack.count == 1
@@ -191,7 +159,7 @@ class Game
 			spaces = "        "
 		else
 			spaces = "    "
-		end 
+		end
 
 		if @deck.count > 0
 			inplay0 += "#{spaces}           T R U M P"
@@ -205,16 +173,15 @@ class Game
 			inplay8 += "#{spaces}    #{@deck.count}" #shows cards remaining in deck
 		else
 			inplay0 += "#{spaces}           T R U M P"
-			if @trump.suit == "heart" 
+			if @trump.suit == "heart"
 				inplay1 += "#{spaces}               ♥"
-			elsif @trump.suit == "spade" 
+			elsif @trump.suit == "spade"
 				inplay1 += "#{spaces}               ♠"
-			elsif @trump.suit == "diamond" 
+			elsif @trump.suit == "diamond"
 				inplay1 += "#{spaces}               ♦"
 			elsif @trump.suit == "club"
 				inplay1 += "#{spaces}               ♣"
 			end
-					
 		end
 
 		puts "#{inplay0}" # display cards in play
@@ -230,51 +197,44 @@ class Game
 
 		pcards() #show players hand
 
-		if @phand.count == 0 || @ohand.count == 0
-			end_game()
-		end
+		end_game() if @phand.count == 0 || @ohand.count == 0
 	end
 
 	def pcards
-		pline1 = pline2 = pline3 = pline4 = pline5 = pline6 = pline7 = pline8 = "" #initialze strings that will show oponent cards
+		pline1 = pline2 = pline3 = pline4 = pline5 = pline6 = pline7 = pline8 = "" #initialize strings that will show player cards
 		pcount = 0 # counts playable cards
-		@phand.count.times{|x|  #create player strings
-			if @phand[x].canplay
-				pline1 += "  #{@phand[x].line1}" #playable cards shown higher than others
-			else
-				pline1 += "           "
+		#create player strings
+		@phand.count.times do |x|
+			#playable cards shown higher than others
+			pline1 += (@phand[x].canplay) ? "  #{@phand[x].line1}" : "           "
+			#unplayable cards shown at regular height
+			pline2 += (@phand[x].canplay) ? "  #{@phand[x].line2}" : "  #{@phand[x].line1}"
 			end}
 		@phand.count.times{|x|
-			if @phand[x].canplay
-				pline2 += "  #{@phand[x].line2}" #unplayable cards shown at regular height
-			else
-				pline2 += "  #{@phand[x].line1}"
-			end}
-		@phand.count.times{|x| 
 			if @phand[x].canplay
 				pline3 += "  #{@phand[x].line3}" #unplayable cards shown at regular height
 			else
 				pline3 += "  #{@phand[x].line2}"
 			end}
-		@phand.count.times{|x| 
+		@phand.count.times{|x|
 			if @phand[x].canplay
 				pline4 += "  #{@phand[x].line4}" #unplayable cards shown at regular height
 			else
 				pline4 += "  #{@phand[x].line3}"
 			end}
-		@phand.count.times{|x| 
+		@phand.count.times{|x|
 			if @phand[x].canplay
 				pline5 += "  #{@phand[x].line5}" #unplayable cards shown at regular height
 			else
 				pline5 += "  #{@phand[x].line4}"
 			end}
-		@phand.count.times{|x| 
+		@phand.count.times{|x|
 			if @phand[x].canplay
 				pline6 += "  #{@phand[x].line6}" #unplayable cards shown at regular height
 			else
 				pline6 += "  #{@phand[x].line5}"
 			end}
-		@phand.count.times{|x| 
+		@phand.count.times{|x|
 			if @phand[x].canplay
 				pline7 += "  #{@phand[x].line7}" #unplayable cards shown at regular height
 			else
@@ -297,16 +257,16 @@ class Game
 		puts "#{pline6}"
 		puts "#{pline7}"
 		puts "#{pline8}"
-	end 
+	end
 
 	def turn #determines if player or opponent go first
-		if @first 
+		if @first
 			@first = false #run first turn 1 time
-			
+
 			#find lowest trump to go first
 			ptrump = 20 #compare value of cards in player's hand to high number
 			otrump = 20 #compare value of cards in player's hand to high number
-			
+
 			@ohand.each{|x| #search oponents hand for lowest trump
 				if x.suit == @trump.suit #only look at trump suit
 					if x.value < otrump #compare value of trum cards
@@ -338,7 +298,7 @@ class Game
 		end
 		puts "Reach out at kenikall@gmail.com to let me know what you think."
 		puts "Follow me on Twitter: @MannahKallon"
-		exit 
+		exit
 	end
 
 #TURN LOGIC
@@ -350,13 +310,13 @@ class Game
 		if @attacker == "player"
 			options = 0 #player choices
 			cardid = "      " #empty sring to identify cards for the user
-			
+
 			@phand.count.times{|x| #put numbers under player cards
 				if x==0
 					cardid  += "#{x+1}"
 					options = x+1 #set player choice numbers
 				else
-					cardid  += "          #{x+1}" 
+					cardid  += "          #{x+1}"
 					options = x+1 #increase with number of cards
 				end}
 			puts cardid
@@ -364,7 +324,7 @@ class Game
 
 			validinput = false #verify input
 			until validinput
-				card = gets.chomp.to_i 
+				card = gets.chomp.to_i
 				card -= 1 #get user input in a form that matches array index
 
 				if card.class != Fixnum || card > options || card < 0 #define valid input
@@ -378,13 +338,13 @@ class Game
 		else
 			num = 20 #set arbitraty high number for comparison
 			temp = nil #place holder for opponent's card
-			
+
 			alltrump = true #check to see if all oponent's cards are trump
 			@ohand.each{|y|
 				if y.suit != @trump.suit
 					alltrump = false
 				end}
-			
+
 			@ohand.each{|x| #search opponent hand for appropriate card
 				if alltrump #if opponent only has trum, they will play trump
 					if x.value < num
@@ -401,7 +361,7 @@ class Game
 		end
 		mount_def()
 	end
- 
+
 	def mount_def() #defend, take or transfer (on initial attack)
 		if @attacker == "player"
 			transfer = nil
@@ -422,9 +382,9 @@ class Game
 					def_transfer()
 				end
 			end
-				
+
 			@ohand.each{|x| #look to defend
-				
+
 				if (@attack[-1].value < x.value && @attack[-1].suit == x.suit)||(@attack[-1].suit != @trump.suit && x. suit == @trump.suit)
 					@ohand.delete(x) #remove card from oponent hand
 					@defend << x # put card in play
@@ -449,7 +409,7 @@ class Game
 				if x.canplay
 					choices << x
 				end}
-			
+
 			if @defend.count == 0 #can only transfer on initial attack
 				@phand.each{|x|
 					if x.value == @attack[0].value
@@ -468,7 +428,7 @@ class Game
 			#GET USER INPUT
 			validinput = false #verify input
 			until validinput
-				card = gets.chomp.to_i 
+				card = gets.chomp.to_i
 
 				if card.class != Fixnum || card > choices.count+1 || card < 0 #define valid input
 					puts "Please choose a card with #{(1..choices.count).to_a.join(", ")}, or #{choices.count + 1} to TAKE."#give player feedback
@@ -530,13 +490,13 @@ class Game
 
 			if choices.length > 0
 				puts "Continue the attack by matching the value of a card in play."
-			end 
+			end
 			puts "Select #{choices.count + 1} to end the turn."
 
 			#GET USER INPUT
 			validinput = false #verify input
 			until validinput
-				card = gets.chomp.to_i 
+				card = gets.chomp.to_i
 
 				if card.class != Fixnum || card > choices.count+1 || card < 0 #define valid input
 					puts "Please choose a card with #{(1..choices.count).to_a.join(", ")}, or #{choices.count + 1} to end the turn."#give player feedback
@@ -597,7 +557,7 @@ class Game
 				@ohand += @attack
 				@ohand += @defend
 				end_turn()
-			end 
+			end
 		else
 			@attack.each{|transattack|
 				@phand.each{|x| x.canplay = false} #reset all cards to unplayable
@@ -618,7 +578,7 @@ class Game
 				puts "You can defend the #{transattack.name} or push #{choices.count+1} to take"
 				validinput = false #verify input
 				until validinput
-					card = gets.chomp.to_i 
+					card = gets.chomp.to_i
 
 					if card.class != Fixnum || card > choices.count+1 || card < 0 #define valid input
 						puts "Please choose a card with #{(1..choices.count).to_a.join(", ")}, or #{choices.count + 1} to end the turn."#give player feedback
@@ -658,17 +618,17 @@ class Game
 	end
 
 #THROWING IN
-#A 1. Attacker discards cards in play 2. Attacker throws a card matching any of the cards in play 
+#A 1. Attacker discards cards in play 2. Attacker throws a card matching any of the cards in play
 #A 1. Defender becomes attacker, discard cards in play, end turn
 #A 2. Add card to attack, defender defends
 
-#DEFENDING THROW IN 
-#D 1. Take, 2. Defend 
+#DEFENDING THROW IN
+#D 1. Take, 2. Defend
 #D 1. Take all cards in play get added to defender's hand #attacker stays attacker
 #D 2. Defender plays a trump or higher card of attacking card's suit #attacker can throw in
 
 #END TURN
-# If there are cars in the deck make sure attacker and defender each have 6 cards 
+# If there are cars in the deck make sure attacker and defender each have 6 cards
 
 	def playable
 		@phand.each{|x| #go through player hand
@@ -682,7 +642,7 @@ class Game
 				x.canplay = true
 			else
 				x.canplay = false
-			end}	
+			end}
 	end
 
 	def create_deck
