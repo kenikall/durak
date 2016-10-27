@@ -142,13 +142,13 @@ class Game
 			inplay1 += "  #{@attack[x].line2}"
 			inplay2 += "  #{@attack[x].line3}"
 
-			inplay3 += (@defend.count >= x && @defend[x] != nil) ? "  #{@defend[x].line1}" :"  #{@attack[x].line4}"
-			inplay4 += (@defend.count >= x && @defend[x] != nil) ? "  #{@defend[x].line2}" : "  #{@attack[x].line5}"
-			inplay5 += (@defend.count >= x && @defend[x] != nil) ? "  #{@defend[x].line3}" : "  #{@attack[x].line6}"
-			inplay6 += (@defend.count >= x && @defend[x] != nil) ? "  #{@defend[x].line4}" : "  #{@attack[x].line7}"
-			inplay7 += (@defend.count >= x && @defend[x] != nil) ? "  #{@defend[x].line5}" : spaces
-			inplay8 += (@defend.count >= x && @defend[x] != nil) ? "  #{@defend[x].line6}" : spaces
-			inplay9 += (@defend.count >= x && @defend[x] != nil) ? "  #{@defend[x].line7}" : spaces
+			inplay3 += (@defend.count >= x && @defend[x]) ? "  #{@defend[x].line1}" :"  #{@attack[x].line4}"
+			inplay4 += (@defend.count >= x && @defend[x]) ? "  #{@defend[x].line2}" : "  #{@attack[x].line5}"
+			inplay5 += (@defend.count >= x && @defend[x]) ? "  #{@defend[x].line3}" : "  #{@attack[x].line6}"
+			inplay6 += (@defend.count >= x && @defend[x]) ? "  #{@defend[x].line4}" : "  #{@attack[x].line7}"
+			inplay7 += (@defend.count >= x && @defend[x]) ? "  #{@defend[x].line5}" : spaces
+			inplay8 += (@defend.count >= x && @defend[x]) ? "  #{@defend[x].line6}" : spaces
+			inplay9 += (@defend.count >= x && @defend[x]) ? "  #{@defend[x].line7}" : spaces
 		end
 
 		if @attack.count == 0
@@ -209,7 +209,7 @@ class Game
 			pline1 += (@phand[x].canplay) ? "  #{@phand[x].line1}" : "           "
 			#unplayable cards shown at regular height
 			pline2 += (@phand[x].canplay) ? "  #{@phand[x].line2}" : "  #{@phand[x].line1}"
-			end}
+			end
 		@phand.count.times{|x|
 			if @phand[x].canplay
 				pline3 += "  #{@phand[x].line3}" #unplayable cards shown at regular height
