@@ -142,7 +142,7 @@ class Game
 			inplay1 += "  #{@attack[x].line2}"
 			inplay2 += "  #{@attack[x].line3}"
 
-			inplay3 += (@defend.count >= x && @defend[x]) ? "  #{@defend[x].line1}" :"  #{@attack[x].line4}"
+			inplay3 += (@defend.count >= x && @defend[x]) ? "  #{@defend[x].line1}" : "  #{@attack[x].line4}"
 			inplay4 += (@defend.count >= x && @defend[x]) ? "  #{@defend[x].line2}" : "  #{@attack[x].line5}"
 			inplay5 += (@defend.count >= x && @defend[x]) ? "  #{@defend[x].line3}" : "  #{@attack[x].line6}"
 			inplay6 += (@defend.count >= x && @defend[x]) ? "  #{@defend[x].line4}" : "  #{@attack[x].line7}"
@@ -206,40 +206,24 @@ class Game
 		#create player strings
 		@phand.count.times do |x|
 			#playable cards shown higher than others
-			pline1 += (@phand[x].canplay) ? "  #{@phand[x].line1}" : "           "
-			#unplayable cards shown at regular height
-			pline2 += (@phand[x].canplay) ? "  #{@phand[x].line2}" : "  #{@phand[x].line1}"
-			end
-		@phand.count.times{|x|
-			if @phand[x].canplay
-				pline3 += "  #{@phand[x].line3}" #unplayable cards shown at regular height
+			if (@phand[x].canplay)
+				pline1 += "  #{@phand[x].line1}"
+				pline2 += "  #{@phand[x].line2}"
+				pline3 += "  #{@phand[x].line3}"
+				pline4 += "  #{@phand[x].line4}"
+				pline5 += "  #{@phand[x].line5}"
+				pline6 += "  #{@phand[x].line6}"
+				pline7 += "  #{@phand[x].line7}"
 			else
+				pline1 += "           "
+				pline2 += "  #{@phand[x].line1}"
 				pline3 += "  #{@phand[x].line2}"
-			end}
-		@phand.count.times{|x|
-			if @phand[x].canplay
-				pline4 += "  #{@phand[x].line4}" #unplayable cards shown at regular height
-			else
 				pline4 += "  #{@phand[x].line3}"
-			end}
-		@phand.count.times{|x|
-			if @phand[x].canplay
-				pline5 += "  #{@phand[x].line5}" #unplayable cards shown at regular height
-			else
 				pline5 += "  #{@phand[x].line4}"
-			end}
-		@phand.count.times{|x|
-			if @phand[x].canplay
-				pline6 += "  #{@phand[x].line6}" #unplayable cards shown at regular height
-			else
 				pline6 += "  #{@phand[x].line5}"
-			end}
-		@phand.count.times{|x|
-			if @phand[x].canplay
-				pline7 += "  #{@phand[x].line7}" #unplayable cards shown at regular height
-			else
 				pline7 += "  #{@phand[x].line6}"
-			end}
+			end
+		end
 		@phand.count.times{|x|
 			if @phand[x].canplay
 				pcount += 1
