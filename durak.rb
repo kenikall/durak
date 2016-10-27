@@ -201,12 +201,13 @@ class Game
 	end
 
 	def pcards
-		pline1 = pline2 = pline3 = pline4 = pline5 = pline6 = pline7 = pline8 = "" #initialize strings that will show player cards
+		pline1 = pline2 = pline3 = pline4 = pline5 = pline6 = pline7 = pline8 = "" #initialize player card strings
 		pcount = 0 # counts playable cards
 		#create player strings
 		@phand.count.times do |x|
 			#playable cards shown higher than others
 			if (@phand[x].canplay)
+				pcount += 1
 				pline1 += "  #{@phand[x].line1}"
 				pline2 += "  #{@phand[x].line2}"
 				pline3 += "  #{@phand[x].line3}"
@@ -214,6 +215,7 @@ class Game
 				pline5 += "  #{@phand[x].line5}"
 				pline6 += "  #{@phand[x].line6}"
 				pline7 += "  #{@phand[x].line7}"
+				pline8 += "      #{pcount}    "
 			else
 				pline1 += "           "
 				pline2 += "  #{@phand[x].line1}"
@@ -222,17 +224,10 @@ class Game
 				pline5 += "  #{@phand[x].line4}"
 				pline6 += "  #{@phand[x].line5}"
 				pline7 += "  #{@phand[x].line6}"
+				pline8 += "  #{@phand[x].line7}"
 			end
 		end
-		@phand.count.times{|x|
-			if @phand[x].canplay
-				pcount += 1
-					pline8 += "      #{pcount}    "
-			else
-				pline8 += "  #{@phand[x].line7}"
-			end}
 
-		#puts "\n" #if card can be played shift it up 1 row
 		puts "#{pline1}" #display player cards face up
 		puts "#{pline2}"
 		puts "#{pline3}"
@@ -251,16 +246,16 @@ class Game
 			ptrump = 20 #compare value of cards in player's hand to high number
 			otrump = 20 #compare value of cards in player's hand to high number
 
-			@ohand.each{|x| #search oponents hand for lowest trump
+			@ohand.each{|x| #search opponents hand for lowest trump
 				if x.suit == @trump.suit #only look at trump suit
-					if x.value < otrump #compare value of trum cards
+					if x.value < otrump #compare value of trump cards
 						otrump = x.value #keep value of lowest trump
 					end
 				end}
 
 			@phand.each{|x| #search players hand for lowest trump
 				if x.suit == @trump.suit #only look at trump suit
-					if x.value < ptrump #compare value of trum cards
+					if x.value < ptrump #compare value of trump cards
 						ptrump = x.value ##keep value of lowest trump
 					end
 				end}
@@ -287,22 +282,23 @@ class Game
 
 #TURN LOGIC
 	def launch_atk #attacker plays card
-		if @phand.count == 0 || @ohand.count == 0
-			end_game()
-		end
+		end_game() if (@phand.count == 0 || @ohand.count == 0)
 
 		if @attacker == "player"
 			options = 0 #player choices
-			cardid = "      " #empty sring to identify cards for the user
+			cardid = "      " #empty string to identify cards for the user
 
-			@phand.count.times{|x| #put numbers under player cards
+			#put numbers under player cards
+			@phand.count.times do |x|
 				if x==0
 					cardid  += "#{x+1}"
 					options = x+1 #set player choice numbers
 				else
 					cardid  += "          #{x+1}"
 					options = x+1 #increase with number of cards
-				end}
+				end
+			end
+
 			puts cardid
 			puts "You are the attacker. Choose a card."
 
@@ -320,21 +316,21 @@ class Game
 			@attack << @phand[card] #put attacking card in attacking array
 			@phand.delete_at(card) #remove card from player hand
 		else
-			num = 20 #set arbitraty high number for comparison
+			num = 20 #set arbitrary high number for comparison
 			temp = nil #place holder for opponent's card
 
-			alltrump = true #check to see if all oponent's cards are trump
+			alltrump = true #check to see if all opponent's cards are trump
 			@ohand.each{|y|
 				if y.suit != @trump.suit
 					alltrump = false
 				end}
 
 			@ohand.each{|x| #search opponent hand for appropriate card
-				if alltrump #if opponent only has trum, they will play trump
+				if alltrump #if opponent only has trump, they will play trump
 					if x.value < num
 						temp = x
 					end
-				elsif x.suit != @trump.suit #opponent will try not to lead with somthing other than trump
+				elsif x.suit != @trump.suit #opponent will try not to lead with something other than trump
 					if x.value < num
 						temp = x
 					end
@@ -352,7 +348,7 @@ class Game
 			if @defend.count == 0 #can only defend if there has been no defense
 				@ohand.each{|x| #look to transfer
 					if @attack[-1].value == x.value
-						@phand.delete(x) #remove card from oponent hand
+						@phand.delete(x) #remove card from opponent hand
 						transfer = x #hold transfer card
 					end}
 
@@ -370,7 +366,7 @@ class Game
 			@ohand.each{|x| #look to defend
 
 				if (@attack[-1].value < x.value && @attack[-1].suit == x.suit)||(@attack[-1].suit != @trump.suit && x. suit == @trump.suit)
-					@ohand.delete(x) #remove card from oponent hand
+					@ohand.delete(x) #remove card from opponent hand
 					@defend << x # put card in play
 					setup() #show game space
 					puts "The opponent defends with the #{x.name}."
@@ -385,7 +381,7 @@ class Game
 			puts "The opponent takes."
 			end_turn() #player attacks
 		else
-			cantransfer = false #only let players transfer under certian conditions
+			cantransfer = false #only let players transfer under certain conditions
 			playable() #identify all playable cards in players hand
 			setup()
 			choices = [] #array for playable cards
@@ -615,7 +611,7 @@ class Game
 # If there are cars in the deck make sure attacker and defender each have 6 cards
 
 	def playable
-		@phand.each{|x| #go through player hand
+		@phand.each do |x| #go through player hand
 			if @attack[-1].suit == @trump.suit && x.suit == @trump.suit && x.value > @attack[-1].value
 				x.canplay = true
 			elsif x.suit == @trump.suit && @attack[-1].suit != @trump.suit #player can always trump any non trump
@@ -626,7 +622,8 @@ class Game
 				x.canplay = true
 			else
 				x.canplay = false
-			end}
+			end
+		end
 	end
 
 	def create_deck
